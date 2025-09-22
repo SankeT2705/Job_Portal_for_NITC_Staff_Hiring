@@ -1,3 +1,6 @@
 # mern-project-template-SSLlab-monsoon2025
-This is the template created for MERN project for SSL Lab in Moonsoon 2025 for MTech First year student 
-<!-- Nithin Sai added a comment -->
+This is the template created for MERN project for SSL Lab in Monsoon 2025 for MTech First year student
+
+## Team Contributions
+- <!-- Nithin Sai added a comment -->
+- Sanket Bobhate Connected (New Branch SankeT2705 created)
