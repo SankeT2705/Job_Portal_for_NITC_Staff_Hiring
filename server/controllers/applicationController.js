@@ -5,7 +5,7 @@ import User from "../models/User.js";
 import Notification from "../models/Notification.js";
 import { sendEmail } from "../config/emailService.js";
 /**
- * ✅ Apply for a Job (User)
+ * Apply for a Job (User)
  */
 export const applyForJob = async (req, res) => {
   try {
@@ -44,7 +44,7 @@ export const applyForJob = async (req, res) => {
 };
 
 /**
- * ✅ Get all applications for logged-in user
+ *Get all applications for logged-in user
  */
 export const getUserApplications = async (req, res) => {
   try {
@@ -61,7 +61,7 @@ export const getUserApplications = async (req, res) => {
 };
 
 /**
- * ✅ Get all applications for Admin (by email)
+ *Get all applications for Admin (by email)
  */
 export const getAdminApplications = async (req, res) => {
   try {
@@ -98,7 +98,7 @@ export const getAdminApplications = async (req, res) => {
 };
 
 /**
- * ✅ Update application status (Admin only)
+ *Update application status (Admin only)
  */
   export const updateApplicationStatus = async (req, res) => {
   try {
@@ -110,11 +110,11 @@ export const getAdminApplications = async (req, res) => {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    // ✅ Update status
+    //Update status
     application.status = status;
     await application.save();
 
-    // ✅ Get applicant details
+    //Get applicant details
     const applicantEmail = application.applicantEmail || application.applicant;
     const applicant = await User.findOne({ email: applicantEmail });
 
