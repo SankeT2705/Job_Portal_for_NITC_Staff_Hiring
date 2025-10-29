@@ -7,3 +7,4 @@ router.post("/handle/:id", handleRequest);
 router.delete("/delete-admin/:id", deleteAdmin);
 
 export default router;
+//Super admin 
