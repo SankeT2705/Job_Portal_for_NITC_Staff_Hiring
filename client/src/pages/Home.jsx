@@ -8,6 +8,12 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 const Home = React.memo(function Home() {
   const currentYear = new Date().getFullYear();
+    const contactSectionRef = React.useRef(null);
+
+  const handleContactClick = React.useCallback((event) => {
+    event.preventDefault();
+    contactSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   return (
     
@@ -42,9 +48,13 @@ const Home = React.memo(function Home() {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/">
+                                <a
+                  className="nav-link"
+                  href="#contact"
+                  onClick={handleContactClick}
+                >
                   Contact
-                </Link>
+                  </a>
               </li>
             </ul>
           </div>
@@ -100,6 +110,39 @@ const Home = React.memo(function Home() {
                 <p className="card-text text-muted">
                   Get instant email updates for job matches, status changes, and new opportunities.
                 </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
+      {/* Contact Section */}
+      <section id="contact" ref={contactSectionRef} className="bg-light py-5">
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-lg-8 text-center">
+              <h2 className="fw-semibold mb-4">Contact Us</h2>
+              <p className="text-muted mb-4">
+                Have questions about the hiring process or need support using the
+                portal? Reach out to the NIT Calicut recruitment team and we&apos;ll
+                get back to you shortly.
+              </p>
+              <div className="d-flex flex-column gap-2">
+                <div>
+                  <i className="bi bi-envelope-fill text-primary me-2"></i>
+                  <a href="mailto:recruitment@nitc.ac.in" className="text-decoration-none">
+                    recruitment@nitc.ac.in
+                  </a>
+                </div>
+                <div>
+                  <i className="bi bi-telephone-fill text-primary me-2"></i>
+                  +91 495 228 6100
+                </div>
+                <div>
+                  <i className="bi bi-geo-alt-fill text-primary me-2"></i>
+                  NIT Calicut, Kozhikode, Kerala 673601
+                </div>
               </div>
             </div>
           </div>
