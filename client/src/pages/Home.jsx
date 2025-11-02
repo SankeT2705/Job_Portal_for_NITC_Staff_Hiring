@@ -77,6 +77,21 @@ const Home = React.memo(function Home() {
     event.preventDefault();
     contactSectionRef.current?.scrollIntoView({ behavior: "smooth" });
   }, []);
+  const [isDarkMode, setIsDarkMode] = React.useState(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("nitc-theme") === "dark";
+    }
+    return false;
+  });
+  const toggleTheme = React.useCallback(() => {
+    setIsDarkMode((prev) => !prev);
+  }, []);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("nitc-theme", isDarkMode ? "dark" : "light");
+    }
+  }, [isDarkMode]);
 
   const navbarStyle = React.useMemo(
     () => ({
@@ -99,20 +114,21 @@ const Home = React.memo(function Home() {
 
   const heroSectionStyle = React.useMemo(
     () => ({
-      backgroundImage: "url('/images/NitGib2.png')",
+      backgroundImage: `url('${isDarkMode ? "/images/DarkThemeNitc.png" : "/images/NitGib2.png"}')`,
       backgroundSize: "cover",
       backgroundPosition: "center 13%",
       backgroundRepeat: "no-repeat",
-      backgroundColor: "#001b4d",
+      backgroundColor: isDarkMode ? "#020817" : "#001b4d",
       minHeight: "520px",
       paddingTop: "120px",
+      transition: "background-image 0.6s ease, background-color 0.6s ease",
     }),
-    []
+    [isDarkMode]
   );
 
   return (
     
-    <div className="d-flex flex-column min-vh-100">
+    <div className={`d-flex flex-column min-vh-100 ${isDarkMode ? "home-dark" : "home-light"}`}>
       {/* Navbar */}
       <nav className="navbar navbar-expand-lg navbar-dark py-3 px-3 position-absolute top-0 start-0 w-100" style={navbarStyle}>
         <div className="container">
@@ -130,8 +146,8 @@ const Home = React.memo(function Home() {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-            <ul className="navbar-nav">
+          <div className="collapse navbar-collapse justify-content-end align-items-lg-center" id="navbarNav">
+            <ul className="navbar-nav me-lg-3">
               <li className="nav-item">
                 <Link className="nav-link text-white fw-semibold px-3" aria-current="page" to="/" style={navLinkStyle}>
                   Home
@@ -148,6 +164,14 @@ const Home = React.memo(function Home() {
                 </a>
               </li>
             </ul>
+            <button
+              type="button"
+              className="theme-toggle ms-lg-2 mt-3 mt-lg-0"
+              onClick={toggleTheme}
+              aria-pressed={isDarkMode}
+            >
+              {isDarkMode ? "Light Mode" : "Dark Mode"}
+            </button>
           </div>
         </div>
       </nav>
@@ -157,14 +181,16 @@ const Home = React.memo(function Home() {
         className="text-white text-center d-flex flex-column justify-content-center align-items-center flex-grow-1 py-5 px-3 position-relative overflow-hidden"
         style={heroSectionStyle}
       >
-        <div
-          className="position-absolute top-0 start-0 w-100 h-100"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(4, 24, 68, 0.15) 0%, rgba(4, 24, 68, 0.38) 46%, rgba(2, 16, 52, 0.68) 100%)",
-          }}
-          aria-hidden="true"
-        ></div>
+        {!isDarkMode && (
+          <div
+            className="position-absolute top-0 start-0 w-100 h-100"
+            style={{
+              background: "linear-gradient(180deg, rgba(4, 24, 68, 0.15) 0%, rgba(4, 24, 68, 0.38) 46%, rgba(2, 16, 52, 0.68) 100%)",
+              transition: "background 0.6s ease",
+            }}
+            aria-hidden="true"
+          ></div>
+        )}
         <div className="container py-5 position-relative">
           <h1 className="display-4 fw-bold mb-3">Welcome to NITC Job Portal</h1>
           <div className="lead position-relative mb-2 mx-auto" style={{ maxWidth: "720px" }}>
@@ -184,16 +210,18 @@ const Home = React.memo(function Home() {
       </section>
 
       {/* Highlights Section */}
-      <section className="bg-light py-5 position-relative">
+      <section className={`py-5 position-relative ${isDarkMode ? "section-dark" : "bg-light"}`}>
         <div
           className="position-absolute start-50 translate-middle-x"
           style={{
             top: "-140px",
             width: "520px",
             height: "520px",
-            background: "radial-gradient(circle, rgba(126, 174, 255, 0.32) 0%, rgba(126, 174, 255, 0) 70%)",
+            background: isDarkMode
+              ? "radial-gradient(circle, rgba(58, 104, 207, 0.42) 0%, rgba(58, 104, 207, 0) 70%)"
+              : "radial-gradient(circle, rgba(126, 174, 255, 0.32) 0%, rgba(126, 174, 255, 0) 70%)",
             filter: "blur(40px)",
-            opacity: 0.65,
+            opacity: isDarkMode ? 0.55 : 0.65,
             pointerEvents: "none",
           }}
         ></div>
@@ -202,10 +230,16 @@ const Home = React.memo(function Home() {
             <span className="stat-badge">
               <i className="bi bi-stars"></i> Highlights
             </span>
-            <h2 className="fw-semibold mb-3" style={{ letterSpacing: "0.05em", color: "#123c7a" }}>
+            <h2
+              className="fw-semibold mb-3"
+              style={{ letterSpacing: "0.05em", color: isDarkMode ? "#dbe6ff" : "#123c7a" }}
+            >
               Built for NITC&apos;s Ambitious Growth
             </h2>
-            <p className="text-muted mx-auto" style={{ maxWidth: "720px" }}>
+            <p
+              className={`mx-auto ${isDarkMode ? "text-muted-dark" : "text-muted"}`}
+              style={{ maxWidth: "720px" }}
+            >
               Real-time insights that celebrate both the people and the possibilities that power the campus.
             </p>
           </div>
@@ -219,7 +253,9 @@ const Home = React.memo(function Home() {
                   <AnimatedCounter target={500} suffix="+" />
                 </h2>
                 <div className="feature-card__divider"></div>
-                <p className="mb-0 text-muted">Successful placements facilitated through the portal.</p>
+                <p className={`mb-0 ${isDarkMode ? "text-muted-dark" : "text-muted"}`}>
+                  Successful placements facilitated through the portal.
+                </p>
               </div>
             </div>
             <div className="col-11 col-md-4 col-lg-3">
@@ -231,7 +267,9 @@ const Home = React.memo(function Home() {
                   <AnimatedCounter target={50} suffix="+" duration={1400} />
                 </h2>
                 <div className="feature-card__divider"></div>
-                <p className="mb-0 text-muted">Departments and centres recruiting talented staff.</p>
+                <p className={`mb-0 ${isDarkMode ? "text-muted-dark" : "text-muted"}`}>
+                  Departments and centres recruiting talented staff.
+                </p>
               </div>
             </div>
             <div className="col-11 col-md-4 col-lg-3">
@@ -241,7 +279,7 @@ const Home = React.memo(function Home() {
                 </div>
                 <h2 className="highlight-number highlight-number--accent mb-0">24x7</h2>
                 <div className="feature-card__divider"></div>
-                <p className="mb-0 text-muted">
+                <p className={`mb-0 ${isDarkMode ? "text-muted-dark" : "text-muted"}`}>
                   Access applications anytime with an interface tuned for clarity and calm.
                 </p>
               </div>
@@ -251,16 +289,29 @@ const Home = React.memo(function Home() {
       </section>
 
       {/* Features Section */}
-      <section className="py-5 position-relative" style={{ background: "linear-gradient(180deg, #f7faff 0%, #eef3ff 100%)" }}>
+      <section
+        className="py-5 position-relative"
+        style={
+          isDarkMode
+            ? { background: "linear-gradient(180deg, #0c162c 0%, #0a1224 100%)" }
+            : { background: "linear-gradient(180deg, #f7faff 0%, #eef3ff 100%)" }
+        }
+      >
         <div className="container position-relative">
           <div className="text-center mb-5">
             <span className="stat-badge">
               <i className="bi bi-magic"></i> Experiences
             </span>
-            <h2 className="fw-semibold mb-3" style={{ letterSpacing: "0.05em", color: "#123c7a" }}>
+            <h2
+              className="fw-semibold mb-3"
+              style={{ letterSpacing: "0.05em", color: isDarkMode ? "#dbe6ff" : "#123c7a" }}
+            >
               Crafted for Every Role at NITC
             </h2>
-            <p className="text-muted mx-auto" style={{ maxWidth: "720px" }}>
+            <p
+              className={`mx-auto ${isDarkMode ? "text-muted-dark" : "text-muted"}`}
+              style={{ maxWidth: "720px" }}
+            >
               Purpose-built tools that stay intuitive across the journey—from discovering openings to closing positions.
             </p>
           </div>
@@ -272,7 +323,7 @@ const Home = React.memo(function Home() {
                 </div>
                 <h5 className="fw-semibold mb-1">For Job Seekers</h5>
                 <div className="feature-card__divider"></div>
-                <p className="text-muted mb-0">
+                <p className={`${isDarkMode ? "text-muted-dark" : "text-muted"} mb-0`}>
                   Browse curated openings, apply with confidence, and monitor progress in a calm, organized dashboard.
                 </p>
               </div>
@@ -284,7 +335,7 @@ const Home = React.memo(function Home() {
                 </div>
                 <h5 className="fw-semibold mb-1">For Admins</h5>
                 <div className="feature-card__divider"></div>
-                <p className="text-muted mb-0">
+                <p className={`${isDarkMode ? "text-muted-dark" : "text-muted"} mb-0`}>
                   Publish roles instantly, shortlist with precision, and collaborate seamlessly with department leads.
                 </p>
               </div>
@@ -296,7 +347,7 @@ const Home = React.memo(function Home() {
                 </div>
                 <h5 className="fw-semibold mb-1">Smart Notifications</h5>
                 <div className="feature-card__divider"></div>
-                <p className="text-muted mb-0">
+                <p className={`${isDarkMode ? "text-muted-dark" : "text-muted"} mb-0`}>
                   Stay in sync with instant alerts for new matches, interview updates, and hiring milestones.
                 </p>
               </div>
@@ -311,14 +362,19 @@ const Home = React.memo(function Home() {
         id="contact"
         ref={contactSectionRef}
         className="py-5 position-relative"
-        style={{ background: "#ffffff" }}
+        style={{ background: isDarkMode ? "#0d1529" : "#ffffff" }}
       >
         <div className="container">
           <div className="row align-items-center g-4">
             <div className="col-lg-7 text-center text-lg-start">
-              <p className="contact-highlight mb-2 text-uppercase">We&apos;re here to help</p>
-              <h2 className="fw-semibold mb-2">Connect with NITC Recruitment</h2>
-              <p className="mb-4" style={{ color: "rgba(18, 52, 112, 0.7)", maxWidth: "540px" }}>
+              <p className={`contact-highlight mb-2 text-uppercase ${isDarkMode ? "text-muted-dark" : ""}`}>We&apos;re here to help</p>
+              <h2 className="fw-semibold mb-2" style={{ color: isDarkMode ? "#f1f5ff" : "#123c7a" }}>
+                Connect with NITC Recruitment
+              </h2>
+              <p
+                className={isDarkMode ? "text-muted-dark" : ""}
+                style={{ color: isDarkMode ? "rgba(214, 226, 255, 0.78)" : "rgba(18, 52, 112, 0.7)", maxWidth: "540px" }}
+              >
                 Our team is ready to assist with portal onboarding, job postings, or application tracking. Reach out using your preferred channel and we&apos;ll respond soon.
               </p>
               <div className="contact-divider"></div>
@@ -339,7 +395,7 @@ const Home = React.memo(function Home() {
             </div>
             <div className="col-lg-5 text-center mt-4 mt-lg-0">
               <img
-                src="/images/ContactUsAnimate.gif"
+                src={isDarkMode ? "/images/contactUsDarktheme.gif" : "/images/ContactUsAnimate.gif"}
                 className="img-fluid"
                 alt="Animated contact icons"
               />
