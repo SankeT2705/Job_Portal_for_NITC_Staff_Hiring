@@ -61,7 +61,7 @@ export const getUserApplications = async (req, res) => {
 };
 
 /**
- *Get all applications for Admin (by email)
+ * Get all applications for Admin (by email)
  */
 export const getAdminApplications = async (req, res) => {
   try {
@@ -98,7 +98,7 @@ export const getAdminApplications = async (req, res) => {
 };
 
 /**
- *Update application status (Admin only)
+ * ✅ Update application status (Admin only)
  */
   export const updateApplicationStatus = async (req, res) => {
   try {
@@ -110,11 +110,11 @@ export const getAdminApplications = async (req, res) => {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    //Update status
+    // ✅ Update status
     application.status = status;
     await application.save();
 
-    //Get applicant details
+    // ✅ Get applicant details
     const applicantEmail = application.applicantEmail || application.applicant;
     const applicant = await User.findOne({ email: applicantEmail });
 

@@ -23,7 +23,7 @@ export const requestAdminAccess = async (req, res) => {
   }
 };
 
-//REGISTER USER / ADMIN
+// REGISTER USER / ADMIN
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password, department, role } = req.body;
@@ -36,7 +36,7 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Remove manual hashing (handled by pre-save hook)
+    // ❌ Remove manual hashing (handled by pre-save hook)
     const newUser = await User.create({
       name,
       email,
