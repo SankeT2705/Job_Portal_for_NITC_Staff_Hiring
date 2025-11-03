@@ -141,6 +141,38 @@
   animation: phraseDrift 8s ease-in-out infinite;
 }
 
+.hero-title {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 5rem;
+  letter-spacing: 0.08em;
+  color: #f7fbff;
+  text-shadow: 0 24px 44px rgba(0, 10, 32, 0.45);
+}
+
+.hero-title::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255, 255, 255, 0.2), rgba(176, 220, 255, 0.85), rgba(140, 184, 255, 0.25), rgba(255, 255, 255, 0.7));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: heroLetterSheen 7.5s ease-in-out infinite;
+  opacity: 0.7;
+}
+
+@keyframes heroLetterSheen {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
 .cta-btn {
   background: radial-gradient(circle at 20% 20%, #f5fafe 0%, #d6e8ff 45%, #b7d0ff 100%);
   color: #082045;
@@ -170,9 +202,9 @@
 .phrase-glow {
   position: absolute;
   inset: -12%;
-  background: radial-gradient(circle at 45% 30%, rgba(126, 192, 255, 0.32) 0%, rgba(126, 192, 255, 0.06) 42%, rgba(126, 192, 255, 0) 70%);
-  filter: blur(24px);
-  opacity: 0.5;
+  background: radial-gradient(circle at 45% 30%, rgba(126, 192, 255, 0.26) 0%, rgba(126, 192, 255, 0.08) 42%, rgba(126, 192, 255, 0) 70%);
+  filter: blur(18px);
+  opacity: 0.42;
   pointer-events: none;
   animation: phraseDrift 12s ease-in-out infinite;
 }
@@ -180,11 +212,11 @@
 .phrase-shimmer {
   position: absolute;
   inset: -45%;
-  background: linear-gradient(118deg, rgba(255, 255, 255, 0), rgba(199, 229, 255, 0.55), rgba(110, 174, 255, 0.25), rgba(255, 255, 255, 0));
+  background: linear-gradient(118deg, rgba(255, 255, 255, 0), rgba(199, 229, 255, 0.48), rgba(110, 174, 255, 0.26), rgba(255, 255, 255, 0));
   transform: translateX(-125%);
   animation: phraseShimmer 6.4s ease-in-out infinite;
   mix-blend-mode: screen;
-  opacity: 0.6;
+  opacity: 0.52;
 }
 
 .highlight-card {
@@ -340,6 +372,8 @@
   letter-spacing: 0.03em;
   box-shadow: 0 18px 28px rgba(22, 46, 96, 0.12);
   backdrop-filter: blur(6px);
+  width: 100%;
+  max-width: 300px;
 }
 
 .contact-info-item:hover {
@@ -367,6 +401,12 @@ a.contact-info-item:hover {
   margin: 1.25rem auto 1.5rem;
   border-radius: 999px;
   background: linear-gradient(90deg, rgba(18, 60, 122, 0), rgba(18, 60, 122, 0.35), rgba(18, 60, 122, 0));
+}
+
+.contact-lottie {
+  width: 100%;
+  max-width: 320px;
+  margin: 0 auto;
 }
 
 .home-light {
@@ -423,13 +463,13 @@ a.contact-info-item:hover {
 }
 
 .home-dark .phrase-glow {
-  background: radial-gradient(circle at 45% 30%, rgba(82, 138, 255, 0.48) 0%, rgba(82, 138, 255, 0.1) 42%, rgba(82, 138, 255, 0) 70%);
-  opacity: 0.62;
+  background: radial-gradient(circle at 45% 30%, rgba(60, 120, 210, 0.22) 0%, rgba(60, 120, 210, 0.08) 42%, rgba(60, 120, 210, 0) 70%);
+  opacity: 0.38;
 }
 
 .home-dark .phrase-shimmer {
-  background: linear-gradient(118deg, rgba(255, 255, 255, 0), rgba(132, 182, 255, 0.65), rgba(68, 118, 206, 0.3), rgba(255, 255, 255, 0));
-  opacity: 0.7;
+  background: linear-gradient(118deg, rgba(255, 255, 255, 0), rgba(118, 168, 244, 0.4), rgba(62, 110, 192, 0.2), rgba(255, 255, 255, 0));
+  opacity: 0.42;
 }
 
 .home-dark .cta-btn {
@@ -444,6 +484,19 @@ a.contact-info-item:hover {
 
 .text-muted-dark {
   color: rgba(208, 220, 245, 0.76) !important;
+}
+
+.section-surface--dark,
+.section-surface--dark h2,
+.section-surface--dark p,
+.section-surface--dark span,
+.section-surface--dark small {
+  color: rgba(230, 238, 255, 0.92) !important;
+}
+
+.section-surface--dark .text-muted,
+.section-surface--dark .text-muted-dark {
+  color: rgba(206, 220, 244, 0.78) !important;
 }
 
 .home-dark .stat-badge {
@@ -492,10 +545,10 @@ a.contact-info-item:hover {
 }
 
 .home-dark .contact-info-item {
-  background: rgba(13, 21, 41, 0.94);
-  color: #e4ecff;
-  border: 1px solid rgba(96, 142, 206, 0.42);
-  box-shadow: 0 14px 28px rgba(4, 8, 18, 0.6);
+  background: rgba(16, 26, 46, 0.85);
+  color: #e8f1ff;
+  border: 1px solid rgba(96, 142, 206, 0.38);
+  box-shadow: 0 14px 28px rgba(4, 8, 18, 0.45);
 }
 
 .home-dark .contact-info-item:hover {
@@ -507,4 +560,37 @@ a.contact-info-item:hover {
   background: linear-gradient(180deg, #0b162d 0%, #070f1f 100%);
   border-top: 1px solid rgba(48, 76, 138, 0.35);
   border-bottom: 1px solid rgba(48, 76, 138, 0.35);
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-overlay--light {
+  background: linear-gradient(180deg, rgba(4, 24, 68, 0.08) 0%, rgba(4, 24, 68, 0.22) 45%, rgba(4, 24, 68, 0.38) 100%);
+}
+
+.hero-overlay--dark {
+  background: linear-gradient(180deg, rgba(3, 8, 18, 0.18) 0%, rgba(3, 8, 18, 0.26) 55%, rgba(3, 8, 18, 0.32) 100%);
+}
+
+.section-surface {
+  border-radius: 28px;
+  padding: 3.5rem 2rem;
+  margin: 0 auto;
+  max-width: 1100px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 26px 48px rgba(8, 16, 32, 0.22);
+}
+
+.section-surface--light {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(132, 170, 232, 0.25);
+}
+
+.section-surface--dark {
+  background: rgba(6, 12, 28, 0.78);
+  border: 1px solid rgba(94, 138, 210, 0.35);
 }
