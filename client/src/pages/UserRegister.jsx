@@ -73,7 +73,7 @@ const UserRegister = React.memo(function UserRegister() {
   const backgroundUrl = useMemo(
     () =>
       `${process.env.PUBLIC_URL}${
-        isDarkMode ? "/images/UserLoginDark.png" : "/images/nitcLightMode.png"
+        isDarkMode ? "/images/UserLoginDark.png" : "/images/UserLoginLight.png"
       }`,
     [isDarkMode]
   );
@@ -106,12 +106,14 @@ const UserRegister = React.memo(function UserRegister() {
     >
       {/* Navbar */}
       <nav
-        className="navbar navbar-expand-lg navbar-dark py-3 px-3 position-absolute top-0 start-0 w-100"
-        style={{ background: "transparent", borderBottom: "none", zIndex: 10 }}
+        className={`navbar navbar-expand-lg px-3 nav-overlay ${
+          isDarkMode ? "navbar-dark" : "navbar-light"
+        } position-absolute top-0 start-0 w-100`}
+        style={{ zIndex: 10 }}
       >
         <div className="container">
           <Link
-            className="navbar-brand fw-semibold text-white"
+            className="navbar-brand fw-semibold"
             to="/"
             style={{ textShadow: "0 6px 18px rgba(0,0,0,0.45)" }}
           >
@@ -132,15 +134,15 @@ const UserRegister = React.memo(function UserRegister() {
             className="collapse navbar-collapse justify-content-end"
             id="navbarNav"
           >
-            <ul className="navbar-nav me-lg-3">
+            <ul className="navbar-nav me-lg-3 mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className="nav-link text-white px-3" to="/">
+                <Link className="nav-link px-3" to="/">
                   Home
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
-                  className="nav-link active fw-semibold text-white px-3"
+                  className="nav-link active fw-semibold px-3"
                   to="/register-user"
                 >
                   Register
@@ -164,21 +166,13 @@ const UserRegister = React.memo(function UserRegister() {
         style={heroSectionStyle}
       >
         {/* Register Card */}
-          <div
-            className="card shadow-lg border-0 p-4 text-start position-relative"
-            style={{
-              width: "380px",
-              borderRadius: "18px",
-              background: isDarkMode
-                ? "rgba(14, 22, 46, 0.92)"
-                : "rgba(255, 255, 255, 0.9)",
-              boxShadow: isDarkMode
-                ? "0 24px 44px rgba(5,10,24,0.75)"
-                : "0 18px 34px rgba(18,54,112,0.16)",
-              backdropFilter: "blur(6px)",
-              zIndex: 5,
-            }}
-          >
+        <div
+          className="surface-card surface-card--glass border-0 p-4 text-start position-relative"
+          style={{
+            width: "380px",
+            zIndex: 5,
+          }}
+        >
           <h4
             className={`text-center mb-4 fw-bold ${
               isDarkMode ? "text-light" : "text-primary"
@@ -198,7 +192,7 @@ const UserRegister = React.memo(function UserRegister() {
               <input
                 type="text"
                 name="name"
-                className="form-control"
+                className="form-control themed-form-control"
                 placeholder="Full Name"
                 value={formData.name}
                 onChange={handleChange}
@@ -209,7 +203,7 @@ const UserRegister = React.memo(function UserRegister() {
               <input
                 type="email"
                 name="email"
-                className="form-control"
+                className="form-control themed-form-control"
                 placeholder="Email"
                 value={formData.email}
                 onChange={handleChange}
@@ -220,7 +214,7 @@ const UserRegister = React.memo(function UserRegister() {
               <input
                 type="password"
                 name="password"
-                className="form-control"
+                className="form-control themed-form-control"
                 placeholder="Password"
                 value={formData.password}
                 onChange={handleChange}

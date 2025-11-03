@@ -10,6 +10,7 @@ import "./Home.css";
 const Home = React.memo(function Home() {
   const currentYear = new Date().getFullYear();
   const contactSectionRef = React.useRef(null);
+  const contactLottieRef = React.useRef(null);
   const handleContactClick = React.useCallback((event) => {
     event.preventDefault();
     contactSectionRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -29,6 +30,32 @@ const Home = React.memo(function Home() {
       window.localStorage.setItem("nitc-theme", isDarkMode ? "dark" : "light");
     }
   }, [isDarkMode]);
+
+  React.useEffect(() => {
+    const player = contactLottieRef.current;
+    if (!player) return;
+
+    const ensurePlaying = () => {
+      try {
+        player.play();
+      } catch {
+        /* ignore */
+      }
+    };
+
+    player.addEventListener("complete", ensurePlaying);
+    player.addEventListener("pause", ensurePlaying);
+    player.addEventListener("stop", ensurePlaying);
+
+    // Kick once on mount to avoid idle state
+    ensurePlaying();
+
+    return () => {
+      player.removeEventListener("complete", ensurePlaying);
+      player.removeEventListener("pause", ensurePlaying);
+      player.removeEventListener("stop", ensurePlaying);
+    };
+  }, []);
 
   const navbarStyle = React.useMemo(
     () => ({
@@ -263,6 +290,7 @@ const Home = React.memo(function Home() {
                 loop
                 className="contact-lottie"
                 style={{ width: "100%", maxWidth: "480px" }}
+                ref={contactLottieRef}
               ></dotlottie-player>
             </div>
           </div>

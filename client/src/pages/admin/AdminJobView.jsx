@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import "../Home.css";
 
 /** ========== Axios Client ========== */
 const useAxiosClient = () => {
@@ -35,6 +36,35 @@ const AdminJobView = React.memo(function AdminJobView() {
   const location = useLocation();
   const navigate = useNavigate();
   const api = useAxiosClient();
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("nitc-theme") === "dark";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncTheme = () => {
+      const storedTheme = window.localStorage.getItem("nitc-theme");
+      setIsDarkMode(storedTheme === "dark");
+    };
+    syncTheme();
+    window.addEventListener("storage", syncTheme);
+    return () => {
+      window.removeEventListener("storage", syncTheme);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("nitc-theme", isDarkMode ? "dark" : "light");
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = useCallback(() => {
+    setIsDarkMode((prev) => !prev);
+  }, []);
 
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -101,10 +131,36 @@ const AdminJobView = React.memo(function AdminJobView() {
     navigate("/admin");
   }, [navigate]);
 
+  const backgroundUrl = useMemo(
+    () =>
+      `${process.env.PUBLIC_URL}${
+        isDarkMode ? "/images/AdminLoginDark.png" : "/images/AdminLoginLight.png"
+      }`,
+    [isDarkMode]
+  );
+
+  const pageStyle = useMemo(
+    () => ({
+      backgroundImage: `url('${backgroundUrl}')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundAttachment: "fixed",
+      backgroundColor: isDarkMode ? "#020817" : "#0a2a64",
+      transition: "background-image 0.6s ease, background-color 0.6s ease",
+    }),
+    [backgroundUrl, isDarkMode]
+  );
+
   /** ========== Render States ========== */
   if (loading) {
     return (
-      <div className="min-vh-100 d-flex justify-content-center align-items-center text-muted">
+      <div
+        className={`min-vh-100 d-flex justify-content-center align-items-center text-muted ${
+          isDarkMode ? "home-dark" : "home-light"
+        }`}
+        style={pageStyle}
+      >
         <div className="spinner-border text-primary me-2" role="status" />
         Loading job details...
       </div>
@@ -113,7 +169,12 @@ const AdminJobView = React.memo(function AdminJobView() {
 
   if (errorMsg || !job) {
     return (
-      <div className="d-flex flex-column justify-content-center align-items-center min-vh-100 bg-light">
+      <div
+        className={`d-flex flex-column justify-content-center align-items-center min-vh-100 ${
+          isDarkMode ? "home-dark" : "home-light"
+        }`}
+        style={pageStyle}
+      >
         <div className="alert alert-warning text-center w-50 shadow-sm">
           <h5>{errorMsg || "⚠️ Job not found"}</h5>
           <p>
@@ -131,41 +192,70 @@ const AdminJobView = React.memo(function AdminJobView() {
 
   /** ========== Main UI ========== */
   return (
-    <div className="min-vh-100 d-flex flex-column bg-light">
+    <div
+      className={`min-vh-100 d-flex flex-column ${
+        isDarkMode ? "home-dark" : "home-light"
+      }`}
+      style={pageStyle}
+    >
       {/* ===== Navbar ===== */}
       <nav
-        className="navbar navbar-expand-lg navbar-dark"
-        style={{ background: "#0B3D6E" }}
+        className={`navbar navbar-expand-lg nav-overlay ${
+          isDarkMode ? "navbar-dark" : "navbar-light"
+        }`}
       >
         <div className="container-fluid">
           <span className="navbar-brand">NITC Job Portal – Admin</span>
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin">
-                Dashboard
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin/applications">
-                Applications
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link text-warning" to="/">
-                Logout
-              </Link>
-            </li>
-          </ul>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#adminJobViewNavbar"
+            aria-controls="adminJobViewNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div
+            className="collapse navbar-collapse justify-content-end"
+            id="adminJobViewNavbar"
+          >
+            <ul className="navbar-nav mb-2 mb-lg-0 align-items-lg-center">
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin">
+                  Dashboard
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin/applications">
+                  Applications
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link text-warning" to="/">
+                  Logout
+                </Link>
+              </li>
+            </ul>
+            <button
+              type="button"
+              className="theme-toggle ms-lg-3 mt-3 mt-lg-0"
+              onClick={toggleTheme}
+            >
+              {isDarkMode ? "Light Mode" : "Dark Mode"}
+            </button>
+          </div>
         </div>
       </nav>
 
       {/* ===== Job Details ===== */}
       <div className="container py-4 flex-grow-1">
         <div
-          className="card shadow-sm border-0 mx-auto"
+          className="card shadow-sm border-0 mx-auto surface-card surface-card--glass"
           style={{ maxWidth: 900 }}
         >
-          <div className="card-header bg-white">
+          <div className="card-header border-0">
             <h4 className="fw-bold text-primary mb-0">{job.title}</h4>
             <small className="text-muted">
               Department: {job.department || "N/A"} • Deadline:{" "}
@@ -188,7 +278,7 @@ const AdminJobView = React.memo(function AdminJobView() {
                   <h6 className="text-secondary">Required Skills</h6>
                   <div className="d-flex flex-wrap gap-2 mb-3">
                     {job.requiredSkills.map((skill, index) => (
-                      <span key={index} className="badge bg-info text-dark">
+                      <span key={index} className="surface-pill">
                         {skill}
                       </span>
                     ))}

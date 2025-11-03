@@ -86,8 +86,10 @@ const UserLogin = React.memo(function UserLogin() {
     >
       {/* Navbar */}
       <nav
-        className="navbar navbar-expand-lg navbar-dark py-3 px-3 position-absolute top-0 start-0 w-100"
-        style={{ background: "transparent", borderBottom: "none", zIndex: 10 }}
+        className={`navbar navbar-expand-lg px-3 nav-overlay ${
+          isDarkMode ? "navbar-dark" : "navbar-light"
+        } position-absolute top-0 start-0 w-100`}
+        style={{ zIndex: 10 }}
       >
         <div className="container">
           <Link
@@ -112,15 +114,15 @@ const UserLogin = React.memo(function UserLogin() {
             className="collapse navbar-collapse justify-content-end"
             id="navbarNav"
           >
-            <ul className="navbar-nav me-lg-3">
+            <ul className="navbar-nav me-lg-3 mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className="nav-link text-white px-3" to="/">
+                <Link className="nav-link px-3" to="/">
                   Home
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
-                  className="nav-link active fw-semibold text-white px-3"
+                  className="nav-link active fw-semibold px-3"
                   to="/login-user"
                 >
                   Login
@@ -170,17 +172,9 @@ const UserLogin = React.memo(function UserLogin() {
 
         {/* Login Card */}
         <div
-          className="card shadow-lg border-0 p-4 text-start position-relative"
+          className="surface-card surface-card--glass border-0 p-4 text-start position-relative"
           style={{
             width: "380px",
-            borderRadius: "18px",
-            background: isDarkMode
-              ? "linear-gradient(160deg, rgba(20,28,52,0.95), rgba(13,21,40,0.95))"
-              : "linear-gradient(160deg, rgba(255,255,255,0.96), rgba(234,242,255,0.94))",
-            boxShadow: isDarkMode
-              ? "0 24px 44px rgba(5,10,24,0.75)"
-              : "0 18px 34px rgba(18,54,112,0.16)",
-            backdropFilter: "blur(6px)",
             zIndex: 5,
           }}
         >
@@ -202,7 +196,7 @@ const UserLogin = React.memo(function UserLogin() {
             <div className="mb-3">
               <input
                 type="email"
-                className="form-control"
+                className="form-control themed-form-control"
                 placeholder="Email"
                 required
                 autoComplete="username"
@@ -213,7 +207,7 @@ const UserLogin = React.memo(function UserLogin() {
             <div className="mb-3">
               <input
                 type="password"
-                className="form-control"
+                className="form-control themed-form-control"
                 placeholder="Password"
                 required
                 autoComplete="current-password"

@@ -12,6 +12,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { Modal, Button, Form } from "react-bootstrap";
 import NotificationBell from "../components/NotificationBell";
 import axios from "axios";
+import "./Home.css";
 
 /** ---------- stable helpers ---------- */
 const getEnvApi = () =>
@@ -36,6 +37,35 @@ const UserDashboard = React.memo(function UserDashboard() {
   const navigate = useNavigate();
   const api = useAxiosClient();
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("nitc-theme") === "dark";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncTheme = () => {
+      const storedTheme = window.localStorage.getItem("nitc-theme");
+      setIsDarkMode(storedTheme === "dark");
+    };
+    syncTheme();
+    window.addEventListener("storage", syncTheme);
+    return () => {
+      window.removeEventListener("storage", syncTheme);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("nitc-theme", isDarkMode ? "dark" : "light");
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = useCallback(() => {
+    setIsDarkMode((prev) => !prev);
+  }, []);
 
   /** ---------- lightweight page-scoped alert/toast ---------- */
   const [alerts, setAlerts] = useState([]);
@@ -446,10 +476,40 @@ const UserDashboard = React.memo(function UserDashboard() {
     [pushAlert]
   );
 
+  const backgroundUrl = useMemo(
+    () =>
+      `${process.env.PUBLIC_URL}${
+        isDarkMode ? "/images/UserLoginDark.png" : "/images/UserLoginLight.png"
+      }`,
+    [isDarkMode]
+  );
+
+  const pageStyle = useMemo(
+    () => ({
+      backgroundImage: `url('${backgroundUrl}')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundAttachment: "fixed",
+      backgroundColor: isDarkMode ? "#020817" : "#e8f1ff",
+      transition: "background-image 0.6s ease, background-color 0.6s ease",
+    }),
+    [backgroundUrl, isDarkMode]
+  );
+
   return (
-    <div className="min-vh-100 d-flex flex-column bg-light">
+    <div
+      className={`min-vh-100 d-flex flex-column ${
+        isDarkMode ? "home-dark" : "home-light"
+      }`}
+      style={pageStyle}
+    >
       {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-4">
+      <nav
+        className={`navbar navbar-expand-lg px-4 nav-overlay ${
+          isDarkMode ? "navbar-dark" : "navbar-light"
+        }`}
+      >
         <div className="container-fluid">
           <span className="navbar-brand fw-semibold">NITC Job Portal</span>
           <button
@@ -464,7 +524,10 @@ const UserDashboard = React.memo(function UserDashboard() {
             <span className="navbar-toggler-icon"></span>
           </button>
 
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <div
+            className="collapse navbar-collapse justify-content-end"
+            id="navbarSupportedContent"
+          >
             <ul className="navbar-nav ms-auto align-items-center">
               <li className="nav-item">
                 <Link className="nav-link active" to="/dashboard-user">
@@ -491,6 +554,13 @@ const UserDashboard = React.memo(function UserDashboard() {
                 </button>
               </li>
             </ul>
+            <button
+              type="button"
+              className="theme-toggle ms-lg-3 mt-3 mt-lg-0"
+              onClick={toggleTheme}
+            >
+              {isDarkMode ? "Light Mode" : "Dark Mode"}
+            </button>
           </div>
         </div>
       </nav>
@@ -529,7 +599,7 @@ const UserDashboard = React.memo(function UserDashboard() {
             {/* Recommended Jobs */}
             {userSkills.length > 0 && recommendedJobs.length > 0 && (
               <div className="card shadow-sm border-0 mb-4">
-                <div className="card-header bg-light fw-semibold fs-5">
+                <div className="card-header border-0 fw-semibold fs-5">
                   Recommended Jobs for You
                 </div>
                 <div className="card-body">
@@ -569,7 +639,7 @@ const UserDashboard = React.memo(function UserDashboard() {
 
             {/* Available Jobs */}
             <div className="card shadow-sm border-0 mb-4">
-              <div className="card-header bg-light fw-semibold fs-5 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+              <div className="card-header border-0 fw-semibold fs-5 d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
                 <span>Available Jobs</span>
                 <div className="d-flex flex-wrap gap-2">
                   <input
@@ -596,8 +666,8 @@ const UserDashboard = React.memo(function UserDashboard() {
               </div>
 
               <div className="card-body">
-                <table className="table table-hover align-middle">
-                  <thead className="table-light">
+                <table className="table table-hover align-middle surface-table">
+                  <thead>
                     <tr>
                       <th>Title</th>
                       <th>Deadline</th>
@@ -656,7 +726,7 @@ const UserDashboard = React.memo(function UserDashboard() {
 
             {/* Application History */}
             <div className="card shadow-sm border-0">
-              <div className="card-header bg-light fw-semibold fs-5">
+              <div className="card-header border-0 fw-semibold fs-5">
                 Application History
               </div>
               <div className="card-body">
@@ -666,8 +736,8 @@ const UserDashboard = React.memo(function UserDashboard() {
                   </p>
                 ) : (
                   <div className="table-responsive">
-                    <table className="table table-hover align-middle">
-                      <thead className="table-light">
+                    <table className="table table-hover align-middle surface-table">
+                      <thead>
                         <tr>
                           <th>Job Title</th>
                           <th>Department</th>
@@ -897,7 +967,7 @@ const UserDashboard = React.memo(function UserDashboard() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-primary text-white text-center py-3 mt-auto">
+      <footer className="bg-dark text-white text-center py-3 mt-auto">
         <small>© 2025 NITC Job Portal User. All rights reserved.</small>
       </footer>
     </div>

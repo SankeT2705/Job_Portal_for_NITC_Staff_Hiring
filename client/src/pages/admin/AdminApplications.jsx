@@ -8,6 +8,7 @@ import React, {
 import { Link, useNavigate } from "react-router-dom";
 import { Modal, Button, Spinner, Badge } from "react-bootstrap";
 import axios from "axios";
+import "../Home.css";
 
 /** Reusable axios client */
 const useAxiosClient = () => {
@@ -32,6 +33,35 @@ const useAxiosClient = () => {
 const AdminApplications = React.memo(function AdminApplications() {
   const navigate = useNavigate();
   const api = useAxiosClient();
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("nitc-theme") === "dark";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncTheme = () => {
+      const storedTheme = window.localStorage.getItem("nitc-theme");
+      setIsDarkMode(storedTheme === "dark");
+    };
+    syncTheme();
+    window.addEventListener("storage", syncTheme);
+   return () => {
+     window.removeEventListener("storage", syncTheme);
+   };
+ }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("nitc-theme", isDarkMode ? "dark" : "light");
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = useCallback(() => {
+    setIsDarkMode((prev) => !prev);
+  }, []);
 
   /** ===== Toast Alert System ===== */
   const [alerts, setAlerts] = useState([]);
@@ -133,37 +163,87 @@ const AdminApplications = React.memo(function AdminApplications() {
     }, 200);
   }, [pushAlert]);
 
+  const backgroundUrl = useMemo(
+    () =>
+      `${process.env.PUBLIC_URL}${
+        isDarkMode ? "/images/AdminLoginDark.png" : "/images/AdminLoginLight.png"
+      }`,
+    [isDarkMode]
+  );
+
+  const pageStyle = useMemo(
+    () => ({
+      backgroundImage: `url('${backgroundUrl}')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundAttachment: "fixed",
+      backgroundColor: isDarkMode ? "#020817" : "#0a2a64",
+      transition: "background-image 0.6s ease, background-color 0.6s ease",
+    }),
+    [backgroundUrl, isDarkMode]
+  );
+
   return (
-    <div className="min-vh-100 d-flex flex-column bg-light">
+    <div
+      className={`min-vh-100 d-flex flex-column ${
+        isDarkMode ? "home-dark" : "home-light"
+      }`}
+      style={pageStyle}
+    >
       {/* ===== Navbar ===== */}
       <nav
-        className="navbar navbar-expand-lg navbar-dark shadow-sm"
-        style={{ background: "#0B3D6E" }}
+        className={`navbar navbar-expand-lg nav-overlay ${
+          isDarkMode ? "navbar-dark" : "navbar-light"
+        }`}
       >
         <div className="container-fluid">
           <span className="navbar-brand fw-semibold">
             NITC Job Portal – Admin
           </span>
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin">
-                Dashboard
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link active" to="/admin/applications">
-                Applications
-              </Link>
-            </li>
-            <li className="nav-item">
-              <button
-                className="btn btn-link nav-link text-warning"
-                onClick={handleLogout}
-              >
-                Logout
-              </button>
-            </li>
-          </ul>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#adminAppsNavbar"
+            aria-controls="adminAppsNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div
+            className="collapse navbar-collapse justify-content-end"
+            id="adminAppsNavbar"
+          >
+            <ul className="navbar-nav mb-2 mb-lg-0 align-items-lg-center">
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin">
+                  Dashboard
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link active" to="/admin/applications">
+                  Applications
+                </Link>
+              </li>
+              <li className="nav-item">
+                <button
+                  className="btn btn-link nav-link text-warning"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </li>
+            </ul>
+            <button
+              type="button"
+              className="theme-toggle ms-lg-3 mt-3 mt-lg-0"
+              onClick={toggleTheme}
+            >
+              {isDarkMode ? "Light Mode" : "Dark Mode"}
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -173,8 +253,8 @@ const AdminApplications = React.memo(function AdminApplications() {
           <div className="alert alert-danger text-center">{errorMsg}</div>
         )}
 
-        <div className="card shadow-sm border-0">
-          <div className="card-header bg-white d-flex justify-content-between align-items-center">
+        <div className="card shadow-sm border-0 surface-card">
+          <div className="card-header border-0 d-flex justify-content-between align-items-center">
             <h5 className="mb-0 fw-bold text-primary">Applications Overview</h5>
             <span className="badge bg-secondary">
               {applications.length} Total
@@ -191,8 +271,8 @@ const AdminApplications = React.memo(function AdminApplications() {
               <p className="text-center text-muted">No applications yet.</p>
             ) : (
               <div className="table-responsive">
-                <table className="table align-middle table-hover">
-                  <thead className="table-light">
+                <table className="table align-middle table-hover surface-table">
+                  <thead>
                     <tr>
                       <th>Applicant</th>
                       <th>Job Title</th>
@@ -280,7 +360,10 @@ const AdminApplications = React.memo(function AdminApplications() {
 
       {/* ===== Resume Preview ===== */}
       {previewUrl && (
-        <div id="resume-preview" className="mt-4 card shadow-sm border-0 p-3">
+        <div
+          id="resume-preview"
+          className="mt-4 surface-card surface-card--glass border-0 p-3"
+        >
           <h6 className="fw-bold text-primary mb-3">Resume Preview</h6>
           <iframe
             src={previewUrl}
@@ -288,9 +371,13 @@ const AdminApplications = React.memo(function AdminApplications() {
             width="100%"
             height="600px"
             style={{
-              border: "2px solid #0B3D6E",
-              borderRadius: "6px",
-              backgroundColor: "#f8f9fa",
+              border: isDarkMode
+                ? "2px solid rgba(120, 165, 255, 0.35)"
+                : "2px solid rgba(18, 60, 122, 0.2)",
+              borderRadius: "12px",
+              backgroundColor: isDarkMode
+                ? "rgba(8, 18, 38, 0.9)"
+                : "rgba(248, 250, 255, 0.92)",
             }}
           ></iframe>
           <div className="text-end mt-2">
@@ -331,7 +418,7 @@ const AdminApplications = React.memo(function AdminApplications() {
               {selectedApp.coverLetter ? (
                 <>
                   <strong>Cover Letter:</strong>
-                  <div className="border rounded p-2 bg-light mt-2">
+                  <div className="surface-card surface-card--muted border-0 p-3 mt-2">
                     {selectedApp.coverLetter}
                   </div>
                 </>

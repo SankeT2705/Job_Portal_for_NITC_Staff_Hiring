@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import "../Home.css";
 
 /** Reusable axios client */
 const useAxiosClient = () => {
@@ -28,6 +29,35 @@ const AdminJobCreate = React.memo(function AdminJobCreate() {
   const api = useAxiosClient();
   const isEdit = Boolean(id);
   const mountedRef = useRef(true);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("nitc-theme") === "dark";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncTheme = () => {
+      const storedTheme = window.localStorage.getItem("nitc-theme");
+      setIsDarkMode(storedTheme === "dark");
+    };
+    syncTheme();
+    window.addEventListener("storage", syncTheme);
+    return () => {
+      window.removeEventListener("storage", syncTheme);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("nitc-theme", isDarkMode ? "dark" : "light");
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = useCallback(() => {
+    setIsDarkMode((prev) => !prev);
+  }, []);
 
   /** Toast system */
   const [alerts, setAlerts] = useState([]);
@@ -134,37 +164,87 @@ const AdminJobCreate = React.memo(function AdminJobCreate() {
     [api, form, isEdit, id, loading, navigate, pushAlert]
   );
 
+  const backgroundUrl = useMemo(
+    () =>
+      `${process.env.PUBLIC_URL}${
+        isDarkMode ? "/images/AdminLoginDark.png" : "/images/AdminLoginLight.png"
+      }`,
+    [isDarkMode]
+  );
+
+  const pageStyle = useMemo(
+    () => ({
+      backgroundImage: `url('${backgroundUrl}')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundAttachment: "fixed",
+      backgroundColor: isDarkMode ? "#020817" : "#0a2a64",
+      transition: "background-image 0.6s ease, background-color 0.6s ease",
+    }),
+    [backgroundUrl, isDarkMode]
+  );
+
   return (
-    <div className="min-vh-100 d-flex flex-column bg-light">
+    <div
+      className={`min-vh-100 d-flex flex-column ${
+        isDarkMode ? "home-dark" : "home-light"
+      }`}
+      style={pageStyle}
+    >
       {/* ======== Navbar ======== */}
       <nav
-        className="navbar navbar-expand-lg navbar-dark"
-        style={{ background: "#0B3D6E" }}
+        className={`navbar navbar-expand-lg nav-overlay ${
+          isDarkMode ? "navbar-dark" : "navbar-light"
+        }`}
       >
         <div className="container-fluid">
           <span className="navbar-brand">NITC Job Portal – Admin</span>
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin">
-                Dashboard
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin/applications">
-                Applications
-              </Link>
-            </li>
-          </ul>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#adminJobCreateNavbar"
+            aria-controls="adminJobCreateNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div
+            className="collapse navbar-collapse justify-content-end"
+            id="adminJobCreateNavbar"
+          >
+            <ul className="navbar-nav mb-2 mb-lg-0 align-items-lg-center">
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin">
+                  Dashboard
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin/applications">
+                  Applications
+                </Link>
+              </li>
+            </ul>
+            <button
+              type="button"
+              className="theme-toggle ms-lg-3 mt-3 mt-lg-0"
+              onClick={toggleTheme}
+            >
+              {isDarkMode ? "Light Mode" : "Dark Mode"}
+            </button>
+          </div>
         </div>
       </nav>
 
       {/* ======== Body ======== */}
       <div className="container py-4 flex-grow-1">
         <div
-          className="card shadow-sm border-0 mx-auto"
+          className="card shadow-sm border-0 mx-auto surface-card surface-card--glass"
           style={{ maxWidth: 900 }}
         >
-          <div className="card-header bg-white text-center">
+          <div className="card-header border-0 text-center">
             <h5 className="mb-0 fw-bold" style={{ color: "#1C4E80" }}>
               {isEdit ? "Edit Job" : "Create New Job"}
             </h5>
