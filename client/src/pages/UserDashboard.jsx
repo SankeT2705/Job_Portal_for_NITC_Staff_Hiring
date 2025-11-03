@@ -280,28 +280,27 @@ const UserDashboard = React.memo(function UserDashboard() {
       .filter(Boolean);
   }, []);
 
+   // ✅ Fixed Recommendation Logic
   const recommendedJobs = useMemo(() => {
     if (!userSkills?.length || !jobs.length) return [];
     const userTokens = normalizeSkills(userSkills);
     if (!userTokens.length) return [];
-    const appSet = new Set(applications.map((a) => a.jobId));
+    const appliedSet = new Set(applications.map((a) => a.jobId));
+
     return jobs
       .map((job) => {
         const reqTokens = normalizeSkills(job.requiredSkills || []);
-        const alreadyApplied = appSet.has(job.id);
-        const titleLc = job.title?.toLowerCase?.() || "";
-        const deptLc = job.department?.toLowerCase?.() || "";
-        const skillMatches = reqTokens.filter((t) =>
-          userTokens.includes(t)
+        const alreadyApplied = appliedSet.has(job.id);
+
+        // Strict match — only exact skills count
+        const skillMatches = reqTokens.filter((skill) =>
+          userTokens.includes(skill)
         ).length;
-        const fallbackMatches = userTokens.filter(
-          (u) => titleLc.includes(u) || deptLc.includes(u)
-        ).length;
-        const score = skillMatches * 10 + fallbackMatches;
-        return { job, score, alreadyApplied };
+
+        return { job, skillMatches, alreadyApplied };
       })
-      .filter((x) => !x.alreadyApplied && x.score > 0)
-      .sort((a, b) => b.score - a.score)
+      .filter((x) => !x.alreadyApplied && x.skillMatches > 0)
+      .sort((a, b) => b.skillMatches - a.skillMatches)
       .map((x) => x.job);
   }, [applications, jobs, normalizeSkills, userSkills]);
 

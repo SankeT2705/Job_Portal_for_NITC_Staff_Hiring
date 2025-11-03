@@ -43,7 +43,7 @@ const AdminLogin = React.memo(function AdminLogin() {
 
       try {
         await login("admin", email.trim(), password);
-        navigate("/dashboard-admin");
+        navigate("/admin");
       } catch (err) {
         console.error("Login failed:", err);
         const msg =

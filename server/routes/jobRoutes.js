@@ -5,7 +5,7 @@ import {
   getJobById,
   updateJob,
   deleteJob,
-  getAdminJobs, // must import
+  getAdminJobs, //must import
 } from "../controllers/jobController.js";
 import { protect } from "../middleware/authMiddleware.js";
 

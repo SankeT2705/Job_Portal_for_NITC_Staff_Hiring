@@ -43,7 +43,7 @@ export const createJob = async (req, res) => {
 };
 
 /**
- * Get All Jobs (Admin → Own Jobs | User → All Jobs)
+ *Get All Jobs (Admin → Own Jobs | User → All Jobs)
  */
 export const getJobs = async (req, res) => {
   try {
