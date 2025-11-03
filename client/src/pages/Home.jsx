@@ -261,7 +261,7 @@ const Home = React.memo(function Home() {
                 speed="1"
                 autoplay
                 loop
-                class="contact-lottie"
+                className="contact-lottie"
                 style={{ width: "100%", maxWidth: "480px" }}
               ></dotlottie-player>
             </div>

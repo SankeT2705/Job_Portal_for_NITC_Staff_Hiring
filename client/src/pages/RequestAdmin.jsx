@@ -60,19 +60,19 @@ const RequestAdmin = React.memo(function RequestAdmin() {
     () => ({
       backgroundImage: `url('${
         isDarkMode
-          ? "/images/admin-bg-dark.png"
-          : "/images/admin-bg-light.png"
+          ? "/images/AdminLoginDark.png"
+          : "/images/AdminLoginLight.png"
       }')`,
       backgroundSize: "cover",
-      backgroundPosition: "center 25%",
+      backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
-      backgroundColor: isDarkMode ? "#020817" : "#001b4d",
+      backgroundAttachment: "fixed",
       minHeight: "100vh",
       display: "flex",
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
-      transition: "background-image 0.6s ease, background-color 0.6s ease",
+      transition: "background-image 0.6s ease",
     }),
     [isDarkMode]
   );
@@ -142,31 +142,6 @@ const RequestAdmin = React.memo(function RequestAdmin() {
         className="text-center d-flex flex-column justify-content-center align-items-center position-relative w-100 flex-grow-1 px-3"
         style={heroSectionStyle}
       >
-        {/* Overlay */}
-        {!isDarkMode ? (
-          <div
-            className="position-absolute top-0 start-0 w-100 h-100"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(4, 24, 68, 0.25) 0%, rgba(4, 24, 68, 0.45) 46%, rgba(2, 16, 52, 0.75) 100%)",
-              transition: "background 0.6s ease",
-              pointerEvents: "none",
-            }}
-            aria-hidden="true"
-          ></div>
-        ) : (
-          <div
-            className="position-absolute top-0 start-0 w-100 h-100"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.6) 100%)",
-              transition: "background 0.6s ease",
-              pointerEvents: "none",
-            }}
-            aria-hidden="true"
-          ></div>
-        )}
-
         {/* Request Form Card */}
         <div
           className="card shadow-lg border-0 p-4 text-start position-relative"
@@ -174,8 +149,8 @@ const RequestAdmin = React.memo(function RequestAdmin() {
             width: "400px",
             borderRadius: "18px",
             background: isDarkMode
-              ? "linear-gradient(160deg, rgba(20,28,52,0.95), rgba(13,21,40,0.95))"
-              : "linear-gradient(160deg, rgba(255,255,255,0.96), rgba(234,242,255,0.94))",
+              ? "rgba(14, 22, 46, 0.92)"
+              : "rgba(255, 255, 255, 0.9)",
             boxShadow: isDarkMode
               ? "0 24px 44px rgba(5,10,24,0.75)"
               : "0 18px 34px rgba(18,54,112,0.16)",
