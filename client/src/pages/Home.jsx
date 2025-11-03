@@ -30,6 +30,17 @@ const Home = React.memo(function Home() {
     }
   }, [isDarkMode]);
 
+  React.useEffect(() => {
+  if (window.location.hash === "#contact") {
+    const el = document.getElementById("contact");
+    if (el) {
+      setTimeout(() => {
+        el.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }
+  }
+}, []);
+
   const navbarStyle = React.useMemo(
     () => ({
       background: "transparent",
@@ -120,6 +131,7 @@ const Home = React.memo(function Home() {
               onClick={toggleTheme}
               aria-pressed={isDarkMode}
             >
+
               {isDarkMode ? "Light Mode" : "Dark Mode"}
             </button>
           </div>

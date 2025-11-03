@@ -90,10 +90,13 @@ const LoginSelection = React.memo(function LoginSelection() {
                 </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link text-white px-3" href="#contact">
-                  Contact
-                </a>
-              </li>
+              <Link
+                className="nav-link text-white px-3"
+                to="/#contact"
+              >
+                Contact
+              </Link>
+            </li>
             </ul>
             <button
               type="button"
