@@ -24,22 +24,25 @@ const LoginSelection = React.memo(function LoginSelection() {
   }, [isDarkMode]);
 
   const heroSectionStyle = React.useMemo(
-  () => ({
-    backgroundImage: `url('${isDarkMode ? "/images/LoginSelectionDarkTheme.png" : "/images/LoginSelectionLightTheme.png"}')`,
-    backgroundSize: "cover",
-    backgroundPosition: "center 25%",
-    backgroundRepeat: "no-repeat",
-    backgroundColor: isDarkMode ? "#020817" : "#001b4d",
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    transition: "background-image 0.6s ease, background-color 0.6s ease",
-  }),
-  [isDarkMode]
-);
-
+    () => ({
+      backgroundImage: `url('${
+        isDarkMode
+          ? "/images/LoginSelectionDarkTheme.png"
+          : "/images/LoginSelectionLightTheme.png"
+      }')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center 25%",
+      backgroundRepeat: "no-repeat",
+      backgroundColor: isDarkMode ? "#020817" : "#001b4d",
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      transition: "background-image 0.6s ease, background-color 0.6s ease",
+    }),
+    [isDarkMode]
+  );
 
   return (
     <div
@@ -73,30 +76,32 @@ const LoginSelection = React.memo(function LoginSelection() {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
+
           <div
             className="collapse navbar-collapse justify-content-end"
             id="navbarNav"
           >
-            <ul className="navbar-nav me-lg-3 mb-2 mb-lg-0">
+            <ul className="navbar-nav me-lg-3">
               <li className="nav-item">
-                <Link className="nav-link px-3" to="/">
+                <Link className="nav-link text-white px-3" to="/">
                   Home
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
-                  className="nav-link active fw-semibold px-3"
+                  className="nav-link active fw-semibold text-white px-3"
                   to="/select-login"
                 >
                   Login
                 </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link px-3" href="#contact">
+                <Link className="nav-link text-white px-3" to="/#contact">
                   Contact
-                </a>
+                </Link>
               </li>
             </ul>
+
             <button
               type="button"
               className="theme-toggle ms-lg-2 mt-3 mt-lg-0"
@@ -108,7 +113,7 @@ const LoginSelection = React.memo(function LoginSelection() {
         </div>
       </nav>
 
-      {/* Hero Section (with animated background) */}
+      {/* Hero Section */}
       <section
         className="text-center d-flex flex-column justify-content-center align-items-center position-relative w-100 flex-grow-1 px-3"
         style={heroSectionStyle}
@@ -127,9 +132,7 @@ const LoginSelection = React.memo(function LoginSelection() {
 
         <div
           className="surface-card surface-card--glass border-0 p-4 text-center position-relative"
-          style={{
-            width: "380px",
-          }}
+          style={{ width: "380px" }}
         >
           <h4
             className={`fw-bold mb-3 ${
@@ -147,7 +150,7 @@ const LoginSelection = React.memo(function LoginSelection() {
             Select your account to continue
           </p>
 
-          {/* Buttons with hover ripple & icons */}
+          {/* Login Options */}
           <div className="d-grid gap-3">
             <Link to="/login-user" className="cta-btn text-decoration-none">
               <i className="bi bi-person-circle me-2"></i>
