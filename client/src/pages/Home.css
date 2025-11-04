@@ -579,6 +579,19 @@ a.contact-info-item:hover {
   backdrop-filter: blur(12px);
 }
 
+.surface-card--transparent {
+  background: rgba(255, 255, 255, 0.42) !important;
+  border: 1px solid rgba(18, 60, 122, 0.14) !important;
+  box-shadow: 0 22px 44px rgba(15, 45, 99, 0.18) !important;
+  backdrop-filter: blur(14px);
+}
+
+.home-dark .surface-card--transparent {
+  background: rgba(6, 14, 30, 0.6) !important;
+  border: 1px solid rgba(132, 178, 255, 0.26) !important;
+  box-shadow: 0 26px 48px rgba(3, 10, 28, 0.72) !important;
+}
+
 .home-dark .surface-card,
 .home-dark .surface-card--muted,
 .home-dark .surface-card--glass {
@@ -591,6 +604,153 @@ a.contact-info-item:hover {
 .home-dark .surface-card--glass {
   background: rgba(8, 20, 44, 0.8);
   border: 1px solid rgba(120, 165, 255, 0.28);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 24px rgba(18, 52, 112, 0.08);
+  backdrop-filter: blur(30px);
+}
+
+.home-dark .glass-panel {
+  background: rgba(8, 18, 40, 0.18);
+  border: 1px solid rgba(132, 178, 255, 0.22);
+  box-shadow: 0 18px 32px rgba(3, 10, 28, 0.6);
+  color: #e7eeff;
+}
+
+.surface-card--transparent.glass-panel {
+  background: inherit !important;
+  border: inherit !important;
+  box-shadow: inherit !important;
+  backdrop-filter: inherit !important;
+}
+
+.home-dark .surface-card--transparent.glass-panel {
+  background: inherit !important;
+  border: inherit !important;
+  box-shadow: inherit !important;
+}
+
+.surface-card--transparent.glass-panel .surface-table tbody tr {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.surface-card--transparent.glass-panel .surface-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.38);
+}
+
+.home-dark .surface-card--transparent.glass-panel .surface-table tbody tr {
+  background: rgba(12, 26, 52, 0.36);
+}
+
+.home-dark .surface-card--transparent.glass-panel .surface-table tbody tr:hover {
+  background: rgba(18, 36, 68, 0.46);
+}
+
+.super-admin-panel {
+  color: #142c54;
+}
+
+.super-admin-panel .text-primary,
+.super-admin-panel h3 {
+  color: #1250c2 !important;
+}
+
+.super-admin-panel h5 {
+  color: #1a3f84;
+}
+
+.super-admin-panel .surface-table thead {
+  color: #1d3a68;
+}
+
+.super-admin-panel .surface-table tbody tr td,
+.super-admin-panel .surface-table tbody tr th {
+  color: #233b5d;
+}
+
+.super-admin-panel p,
+.super-admin-panel span,
+.super-admin-panel small,
+.super-admin-panel label {
+  color: #1f3658;
+}
+
+.super-admin-panel .text-muted {
+  color: #384f6f !important;
+}
+
+.home-dark .super-admin-panel {
+  color: #e8f2ff;
+}
+
+.home-dark .super-admin-panel .text-primary,
+.home-dark .super-admin-panel h3 {
+  color: #9fc1ff !important;
+}
+
+.home-dark .super-admin-panel h5 {
+  color: #c5dcff;
+}
+
+.home-dark .super-admin-panel .surface-table thead {
+  color: #f1f6ff;
+}
+
+.home-dark .super-admin-panel .surface-table tbody tr td,
+.home-dark .super-admin-panel .surface-table tbody tr th {
+  color: #f6f9ff;
+}
+
+.home-dark .super-admin-panel p,
+.home-dark .super-admin-panel span,
+.home-dark .super-admin-panel small,
+.home-dark .super-admin-panel label {
+  color: #f0f5ff;
+}
+
+.home-dark .super-admin-panel .text-muted {
+  color: rgba(221, 235, 255, 0.8) !important;
+}
+
+.glass-panel .card-header,
+.home-dark .glass-panel .card-header {
+  background: transparent !important;
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.home-dark .glass-panel .text-muted,
+.home-dark .glass-panel small,
+.home-dark .glass-panel p {
+  color: rgba(214, 226, 255, 0.72) !important;
+}
+
+.glass-panel .btn-outline-primary {
+  border-color: rgba(18, 72, 146, 0.32);
+  color: #124287;
+}
+
+.home-dark .glass-panel .btn-outline-primary {
+  border-color: rgba(132, 178, 255, 0.4);
+  color: rgba(214, 226, 255, 0.92);
+}
+
+.glass-panel .surface-table tbody tr {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.home-dark .glass-panel .surface-table tbody tr {
+  background: rgba(12, 26, 52, 0.18);
+}
+
+.glass-panel .surface-table tbody tr:hover {
+  background: rgba(240, 245, 255, 0.22);
+}
+
+.home-dark .glass-panel .surface-table tbody tr:hover {
+  background: rgba(20, 36, 68, 0.28);
 }
 
 .home-dark .surface-card--muted {

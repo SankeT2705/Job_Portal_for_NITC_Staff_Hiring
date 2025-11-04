@@ -225,7 +225,7 @@ const SuperAdminDashboard = React.memo(function SuperAdminDashboard() {
 
       {/* Dashboard */}
       <Container className="flex-grow-1 py-5">
-        <Card className="shadow-lg border-0 p-4 surface-card surface-card--glass">
+        <Card className="shadow-lg border-0 p-4 surface-card surface-card--glass glass-panel surface-card--transparent super-admin-panel">
           <h3 className="fw-bold text-primary mb-4 text-center">
             Super Admin Dashboard
           </h3>

@@ -270,7 +270,7 @@ const AdminDashboard = React.memo(function AdminDashboard() {
         <div className="row g-4">
           {/* Sidebar */}
           <div className="col-lg-3">
-            <div className="card shadow-sm border-0 p-3 mb-3">
+            <div className="card shadow-sm border-0 p-3 mb-3 glass-panel">
               <h4 className="text-primary mb-2">Welcome, {adminName}</h4>
               <p className="text-muted small mb-3">
                 Manage job postings and review applications efficiently.
@@ -292,13 +292,13 @@ const AdminDashboard = React.memo(function AdminDashboard() {
             </div>
 
             {/* Stats */}
-            <div className="card shadow-sm border-0 p-3 mb-3 text-center">
+            <div className="card shadow-sm border-0 p-3 mb-3 text-center glass-panel">
               <div className="text-muted">Active Jobs</div>
               <div className="display-6 text-primary fw-bold">
                 {loading ? "…" : stats.activeJobs}
               </div>
             </div>
-            <div className="card shadow-sm border-0 p-3 text-center">
+            <div className="card shadow-sm border-0 p-3 text-center glass-panel">
               <div className="text-muted">Total Applications</div>
               <div className="display-6 text-primary fw-bold">
                 {loading ? "…" : stats.totalApplications}
@@ -308,7 +308,7 @@ const AdminDashboard = React.memo(function AdminDashboard() {
 
           {/* Job Table */}
           <div className="col-lg-9">
-            <div className="card shadow-sm border-0 surface-card">
+            <div className="card shadow-sm border-0 surface-card glass-panel">
               <div className="card-header border-0">
                 <h5 className="mb-0 text-center fw-bold text-primary">
                   Your Job Postings
