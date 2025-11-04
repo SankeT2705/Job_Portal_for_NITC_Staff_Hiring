@@ -156,6 +156,7 @@
   inset: 0;
   background: linear-gradient(120deg, rgba(255, 255, 255, 0.2), rgba(176, 220, 255, 0.85), rgba(140, 184, 255, 0.25), rgba(255, 255, 255, 0.7));
   background-size: 200% 100%;
+  background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   animation: heroLetterSheen 7.5s ease-in-out infinite;
@@ -497,13 +498,13 @@ a.contact-info-item:hover {
 .home-light .nav-overlay .navbar-brand,
 .home-light .nav-overlay .nav-link,
 .home-light .nav-overlay .btn-link {
-  color: #0f2d63 !important;
-  text-shadow: 0 12px 26px rgba(255, 255, 255, 0.7), 0 4px 10px rgba(16, 45, 99, 0.22);
+  color: #ffffff !important;
+  text-shadow: 0 16px 32px rgba(0, 0, 0, 0.45), 0 4px 12px rgba(0, 0, 0, 0.28);
 }
 
 .home-light .nav-overlay .nav-link:hover,
 .home-light .nav-overlay .navbar-brand:hover {
-  color: #123c7a !important;
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .home-dark .nav-overlay .nav-link:hover,
@@ -634,11 +635,11 @@ a.contact-info-item:hover {
 }
 
 .surface-card--transparent.glass-panel .surface-table tbody tr {
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.48);
 }
 
 .surface-card--transparent.glass-panel .surface-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.68);
 }
 
 .home-dark .surface-card--transparent.glass-panel .surface-table tbody tr {
@@ -649,70 +650,60 @@ a.contact-info-item:hover {
   background: rgba(18, 36, 68, 0.46);
 }
 
-.super-admin-panel {
-  color: #142c54;
+.super-admin-dashboard {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  color: #0d1f3a;
+  letter-spacing: 0.015em;
+}
+
+.super-admin-dashboard .navbar-brand,
+.super-admin-dashboard .nav-link,
+.super-admin-dashboard .theme-toggle {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  letter-spacing: 0.045em;
+}
+
+.super-admin-dashboard .theme-toggle {
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.super-admin-dashboard.home-light .nav-overlay .navbar-brand,
+.super-admin-dashboard.home-light .nav-overlay .nav-link {
+  color: #0b2754 !important;
+  text-shadow: 0 16px 32px rgba(255, 255, 255, 0.52);
+}
+
+.super-admin-dashboard.home-dark .nav-overlay .navbar-brand,
+.super-admin-dashboard.home-dark .nav-overlay .nav-link {
+  color: #f4f8ff !important;
+  text-shadow: 0 20px 38px rgba(0, 0, 0, 0.65);
 }
 
 .super-admin-panel .text-primary,
 .super-admin-panel h3 {
-  color: #1250c2 !important;
-}
-
-.super-admin-panel h5 {
-  color: #1a3f84;
+  color: #dae3e4 !important;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  text-shadow: 0 18px 36px rgba(7, 32, 88, 0.25);
 }
 
 .super-admin-panel .surface-table thead {
-  color: #1d3a68;
+  color: #0b2a59;
+  font-weight: 700;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
 }
 
 .super-admin-panel .surface-table tbody tr td,
 .super-admin-panel .surface-table tbody tr th {
-  color: #233b5d;
-}
-
-.super-admin-panel p,
-.super-admin-panel span,
-.super-admin-panel small,
-.super-admin-panel label {
-  color: #1f3658;
-}
-
-.super-admin-panel .text-muted {
-  color: #384f6f !important;
-}
-
-.home-dark .super-admin-panel {
-  color: #e8f2ff;
-}
-
-.home-dark .super-admin-panel .text-primary,
-.home-dark .super-admin-panel h3 {
-  color: #9fc1ff !important;
-}
-
-.home-dark .super-admin-panel h5 {
-  color: #c5dcff;
-}
-
-.home-dark .super-admin-panel .surface-table thead {
-  color: #f1f6ff;
-}
-
-.home-dark .super-admin-panel .surface-table tbody tr td,
-.home-dark .super-admin-panel .surface-table tbody tr th {
-  color: #f6f9ff;
-}
-
-.home-dark .super-admin-panel p,
-.home-dark .super-admin-panel span,
-.home-dark .super-admin-panel small,
-.home-dark .super-admin-panel label {
-  color: #f0f5ff;
+  color: #1a3358;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 .home-dark .super-admin-panel .text-muted {
-  color: rgba(221, 235, 255, 0.8) !important;
+  color: rgba(219, 232, 255, 0.85) !important;
 }
 
 .glass-panel .card-header,

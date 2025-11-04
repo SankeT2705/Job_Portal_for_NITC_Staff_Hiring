@@ -34,7 +34,7 @@ const RequestAdmin = React.memo(function RequestAdmin() {
     }
 
     try {
-      const { data } = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_API_URL}/api/auth/request-admin`,
         form,
         { timeout: 8000 }
