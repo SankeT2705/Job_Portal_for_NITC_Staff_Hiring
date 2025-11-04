@@ -85,12 +85,14 @@ const RequestAdmin = React.memo(function RequestAdmin() {
     >
       {/* Navbar */}
       <nav
-        className="navbar navbar-expand-lg navbar-dark py-3 px-3 position-absolute top-0 start-0 w-100"
-        style={{ background: "transparent", zIndex: 10 }}
+        className={`navbar navbar-expand-lg px-3 nav-overlay ${
+          isDarkMode ? "navbar-dark" : "navbar-light"
+        } position-absolute top-0 start-0 w-100`}
+        style={{ zIndex: 10 }}
       >
         <div className="container">
           <Link
-            className="navbar-brand fw-semibold text-white"
+            className="navbar-brand fw-semibold"
             to="/"
             style={{ textShadow: "0 6px 18px rgba(0,0,0,0.45)" }}
           >
@@ -111,15 +113,15 @@ const RequestAdmin = React.memo(function RequestAdmin() {
             className="collapse navbar-collapse justify-content-end"
             id="navbarNav"
           >
-            <ul className="navbar-nav me-lg-3">
+            <ul className="navbar-nav me-lg-3 mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className="nav-link text-white px-3" to="/">
+                <Link className="nav-link px-3" to="/">
                   Home
                 </Link>
               </li>
               <li className="nav-item">
                 <Link
-                  className="nav-link active fw-semibold text-white px-3"
+                  className="nav-link active fw-semibold px-3"
                   to="/request-admin"
                 >
                   Request Admin
@@ -144,17 +146,9 @@ const RequestAdmin = React.memo(function RequestAdmin() {
       >
         {/* Request Form Card */}
         <div
-          className="card shadow-lg border-0 p-4 text-start position-relative"
+          className="surface-card surface-card--glass border-0 p-4 text-start position-relative"
           style={{
             width: "400px",
-            borderRadius: "18px",
-            background: isDarkMode
-              ? "rgba(14, 22, 46, 0.92)"
-              : "rgba(255, 255, 255, 0.9)",
-            boxShadow: isDarkMode
-              ? "0 24px 44px rgba(5,10,24,0.75)"
-              : "0 18px 34px rgba(18,54,112,0.16)",
-            backdropFilter: "blur(6px)",
             zIndex: 5,
           }}
         >
@@ -256,55 +250,6 @@ const RequestAdmin = React.memo(function RequestAdmin() {
 });
 
 export default RequestAdmin;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import React, { useState } from "react";
 // import axios from "axios";
 // import { Form, Button, Container, Spinner, Card } from "react-bootstrap";

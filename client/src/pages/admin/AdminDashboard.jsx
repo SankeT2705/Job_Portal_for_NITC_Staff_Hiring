@@ -4,6 +4,7 @@ import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
 import { checkAdminValidity } from "../../components/checkAdminValidity";
+import "../Home.css";
 
 /** Reusable axios client */
 const useAxiosClient = () => {
@@ -29,6 +30,35 @@ const AdminDashboard = React.memo(function AdminDashboard() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const api = useAxiosClient();
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("nitc-theme") === "dark";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncTheme = () => {
+      const storedTheme = window.localStorage.getItem("nitc-theme");
+      setIsDarkMode(storedTheme === "dark");
+    };
+    syncTheme();
+    window.addEventListener("storage", syncTheme);
+    return () => {
+      window.removeEventListener("storage", syncTheme);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("nitc-theme", isDarkMode ? "dark" : "light");
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = useCallback(() => {
+    setIsDarkMode((prev) => !prev);
+  }, []);
 
   /** Toast state */
   const [alerts, setAlerts] = useState([]);
@@ -147,40 +177,87 @@ const AdminDashboard = React.memo(function AdminDashboard() {
   );
   const goDashboard = useCallback(() => navigate("/admin"), [navigate]);
 
+  const backgroundUrl = useMemo(
+    () =>
+      `${process.env.PUBLIC_URL}${
+        isDarkMode ? "/images/AdminLoginDark.png" : "/images/AdminLoginLight.png"
+      }`,
+    [isDarkMode]
+  );
+
+  const pageStyle = useMemo(
+    () => ({
+      backgroundImage: `url('${backgroundUrl}')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundAttachment: "fixed",
+      backgroundColor: isDarkMode ? "#020817" : "#0a2a64",
+      transition: "background-image 0.6s ease, background-color 0.6s ease",
+    }),
+    [backgroundUrl, isDarkMode]
+  );
+
   return (
-    <div className="min-vh-100 d-flex flex-column bg-light">
+    <div
+      className={`min-vh-100 d-flex flex-column ${
+        isDarkMode ? "home-dark" : "home-light"
+      }`}
+      style={pageStyle}
+    >
       {/* ===== Navbar ===== */}
       <nav
-        className="navbar navbar-expand-lg navbar-dark shadow-sm"
-        style={{ background: "#0B3D6E" }}
+        className={`navbar navbar-expand-lg nav-overlay ${
+          isDarkMode ? "navbar-dark" : "navbar-light"
+        }`}
       >
         <div className="container-fluid">
           <span className="navbar-brand fw-semibold">
             NITC Job Portal Admin
           </span>
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <button
-                className="btn btn-link nav-link active"
-                onClick={goDashboard}
-              >
-                Dashboard
-              </button>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/admin/applications">
-                Applications
-              </Link>
-            </li>
-            <li className="nav-item">
-              <button
-                className="btn btn-link nav-link text-warning"
-                onClick={logout}
-              >
-                Logout
-              </button>
-            </li>
-          </ul>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#adminNavbar"
+            aria-controls="adminNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="collapse navbar-collapse justify-content-end" id="adminNavbar">
+            <ul className="navbar-nav mb-2 mb-lg-0 align-items-lg-center">
+              <li className="nav-item">
+                <button
+                  className="btn btn-link nav-link active"
+                  onClick={goDashboard}
+                >
+                  Dashboard
+                </button>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/admin/applications">
+                  Applications
+                </Link>
+              </li>
+              <li className="nav-item">
+                <button
+                  className="btn btn-link nav-link text-warning"
+                  onClick={logout}
+                >
+                  Logout
+                </button>
+              </li>
+            </ul>
+            <button
+              type="button"
+              className="theme-toggle ms-lg-3 mt-3 mt-lg-0"
+              onClick={toggleTheme}
+            >
+              {isDarkMode ? "Light Mode" : "Dark Mode"}
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -231,8 +308,8 @@ const AdminDashboard = React.memo(function AdminDashboard() {
 
           {/* Job Table */}
           <div className="col-lg-9">
-            <div className="card shadow-sm border-0">
-              <div className="card-header bg-white">
+            <div className="card shadow-sm border-0 surface-card">
+              <div className="card-header border-0">
                 <h5 className="mb-0 text-center fw-bold text-primary">
                   Your Job Postings
                 </h5>
@@ -250,8 +327,8 @@ const AdminDashboard = React.memo(function AdminDashboard() {
                   </p>
                 ) : (
                   <div className="table-responsive">
-                    <table className="table align-middle table-hover">
-                      <thead className="table-light">
+                    <table className="table align-middle table-hover surface-table">
+                      <thead>
                         <tr>
                           <th>Title</th>
                           <th>Department</th>
@@ -317,6 +394,9 @@ const AdminDashboard = React.memo(function AdminDashboard() {
           setNewPassword("");
         }}
         centered
+        contentClassName={`modal-themed ${
+          isDarkMode ? "modal-themed-dark" : "modal-themed-light"
+        }`}
       >
         <Modal.Header closeButton>
           <Modal.Title>Change Password</Modal.Title>

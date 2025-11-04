@@ -4,6 +4,7 @@ import { Table, Button, Container, Spinner, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "./Home.css";
 
 /** ==============================
  *   AXIOS CLIENT (Reusable)
@@ -25,6 +26,35 @@ const useAxiosClient = () => {
 
 const SuperAdminDashboard = React.memo(function SuperAdminDashboard() {
   const api = useAxiosClient();
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("nitc-theme") === "dark";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncTheme = () => {
+      const storedTheme = window.localStorage.getItem("nitc-theme");
+      setIsDarkMode(storedTheme === "dark");
+    };
+    syncTheme();
+    window.addEventListener("storage", syncTheme);
+    return () => {
+      window.removeEventListener("storage", syncTheme);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("nitc-theme", isDarkMode ? "dark" : "light");
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = useCallback(() => {
+    setIsDarkMode((prev) => !prev);
+  }, []);
 
   /** ====== STATE ====== */
   const [requests, setRequests] = useState([]);
@@ -114,11 +144,43 @@ const SuperAdminDashboard = React.memo(function SuperAdminDashboard() {
     [api, pushAlert]
   );
 
+  const backgroundUrl = useMemo(
+    () =>
+      `${process.env.PUBLIC_URL}${
+        isDarkMode
+          ? "/images/superAdminDark.png"
+          : "/images/superAdminLight.png"
+      }`,
+    [isDarkMode]
+  );
+
+  const pageStyle = useMemo(
+    () => ({
+      backgroundImage: `url('${backgroundUrl}')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundAttachment: "fixed",
+      backgroundColor: isDarkMode ? "#020817" : "#092148",
+      transition: "background-image 0.6s ease, background-color 0.6s ease",
+    }),
+    [backgroundUrl, isDarkMode]
+  );
+
   /** ====== RENDER ====== */
   return (
-    <div className="d-flex flex-column min-vh-100 bg-light">
+    <div
+      className={`d-flex flex-column min-vh-100 ${
+        isDarkMode ? "home-dark" : "home-light"
+      }`}
+      style={pageStyle}
+    >
       {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+      <nav
+        className={`navbar navbar-expand-lg nav-overlay ${
+          isDarkMode ? "navbar-dark" : "navbar-light"
+        }`}
+      >
         <div className="container">
           <Link className="navbar-brand fw-semibold" to="/">
             NITC Job Portal
@@ -138,7 +200,7 @@ const SuperAdminDashboard = React.memo(function SuperAdminDashboard() {
             className="collapse navbar-collapse justify-content-end"
             id="navbarNav"
           >
-            <ul className="navbar-nav">
+            <ul className="navbar-nav mb-2 mb-lg-0 align-items-lg-center">
               <li className="nav-item">
                 <Link className="nav-link" to="/">
                   Home
@@ -150,13 +212,20 @@ const SuperAdminDashboard = React.memo(function SuperAdminDashboard() {
                 </Link>
               </li>
             </ul>
+            <button
+              type="button"
+              className="theme-toggle ms-lg-3 mt-3 mt-lg-0"
+              onClick={toggleTheme}
+            >
+              {isDarkMode ? "Light Mode" : "Dark Mode"}
+            </button>
           </div>
         </div>
       </nav>
 
       {/* Dashboard */}
       <Container className="flex-grow-1 py-5">
-        <Card className="shadow-lg border-0 p-4">
+        <Card className="shadow-lg border-0 p-4 surface-card surface-card--glass">
           <h3 className="fw-bold text-primary mb-4 text-center">
             Super Admin Dashboard
           </h3>
@@ -169,14 +238,8 @@ const SuperAdminDashboard = React.memo(function SuperAdminDashboard() {
 
           {/* Pending Admin Requests */}
           <h5 className="mt-4 text-primary">Pending Admin Requests</h5>
-          <Table
-            striped
-            bordered
-            hover
-            responsive
-            className="align-middle text-center mt-3"
-          >
-            <thead className="table-light">
+          <Table responsive className="surface-table align-middle text-center mt-3">
+            <thead>
               <tr>
                 <th>Name</th>
                 <th>Email</th>
@@ -224,14 +287,8 @@ const SuperAdminDashboard = React.memo(function SuperAdminDashboard() {
 
           {/* Current Admins */}
           <h5 className="mt-5 text-primary">Current Admins</h5>
-          <Table
-            striped
-            bordered
-            hover
-            responsive
-            className="align-middle text-center mt-3"
-          >
-            <thead className="table-light">
+          <Table responsive className="surface-table align-middle text-center mt-3">
+            <thead>
               <tr>
                 <th>Name</th>
                 <th>Email</th>

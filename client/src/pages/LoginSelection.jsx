@@ -24,22 +24,25 @@ const LoginSelection = React.memo(function LoginSelection() {
   }, [isDarkMode]);
 
   const heroSectionStyle = React.useMemo(
-  () => ({
-    backgroundImage: `url('${isDarkMode ? "/images/LoginSelectionDarkTheme.png" : "/images/LoginSelectionLightTheme.png"}')`,
-    backgroundSize: "cover",
-    backgroundPosition: "center 25%",
-    backgroundRepeat: "no-repeat",
-    backgroundColor: isDarkMode ? "#020817" : "#001b4d",
-    minHeight: "100vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    transition: "background-image 0.6s ease, background-color 0.6s ease",
-  }),
-  [isDarkMode]
-);
-
+    () => ({
+      backgroundImage: `url('${
+        isDarkMode
+          ? "/images/LoginSelectionDarkTheme.png"
+          : "/images/LoginSelectionLightTheme.png"
+      }')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center 25%",
+      backgroundRepeat: "no-repeat",
+      backgroundColor: isDarkMode ? "#020817" : "#001b4d",
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      transition: "background-image 0.6s ease, background-color 0.6s ease",
+    }),
+    [isDarkMode]
+  );
 
   return (
     <div
@@ -49,12 +52,14 @@ const LoginSelection = React.memo(function LoginSelection() {
     >
       {/* Navbar */}
       <nav
-        className="navbar navbar-expand-lg navbar-dark py-3 px-3 position-absolute top-0 start-0 w-100"
-        style={{ background: "transparent", borderBottom: "none", zIndex: 10 }}
+        className={`navbar navbar-expand-lg px-3 nav-overlay ${
+          isDarkMode ? "navbar-dark" : "navbar-light"
+        } position-absolute top-0 start-0 w-100`}
+        style={{ zIndex: 10 }}
       >
         <div className="container">
           <Link
-            className="navbar-brand fw-semibold text-white"
+            className="navbar-brand fw-semibold"
             to="/"
             style={{ textShadow: "0 6px 18px rgba(0,0,0,0.45)" }}
           >
@@ -71,6 +76,7 @@ const LoginSelection = React.memo(function LoginSelection() {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
+
           <div
             className="collapse navbar-collapse justify-content-end"
             id="navbarNav"
@@ -90,14 +96,12 @@ const LoginSelection = React.memo(function LoginSelection() {
                 </Link>
               </li>
               <li className="nav-item">
-              <Link
-                className="nav-link text-white px-3"
-                to="/#contact"
-              >
-                Contact
-              </Link>
-            </li>
+                <Link className="nav-link text-white px-3" to="/#contact">
+                  Contact
+                </Link>
+              </li>
             </ul>
+
             <button
               type="button"
               className="theme-toggle ms-lg-2 mt-3 mt-lg-0"
@@ -109,7 +113,7 @@ const LoginSelection = React.memo(function LoginSelection() {
         </div>
       </nav>
 
-      {/* Hero Section (with animated background) */}
+      {/* Hero Section */}
       <section
         className="text-center d-flex flex-column justify-content-center align-items-center position-relative w-100 flex-grow-1 px-3"
         style={heroSectionStyle}
@@ -127,18 +131,8 @@ const LoginSelection = React.memo(function LoginSelection() {
         )}
 
         <div
-          className="card shadow-lg border-0 p-4 text-center position-relative"
-          style={{
-            width: "380px",
-            borderRadius: "18px",
-            background: isDarkMode
-              ? "linear-gradient(160deg, rgba(20,28,52,0.95), rgba(13,21,40,0.95))"
-              : "linear-gradient(160deg, rgba(255,255,255,0.96), rgba(234,242,255,0.94))",
-            boxShadow: isDarkMode
-              ? "0 24px 44px rgba(5,10,24,0.75)"
-              : "0 18px 34px rgba(18,54,112,0.16)",
-            backdropFilter: "blur(6px)",
-          }}
+          className="surface-card surface-card--glass border-0 p-4 text-center position-relative"
+          style={{ width: "380px" }}
         >
           <h4
             className={`fw-bold mb-3 ${
@@ -156,7 +150,7 @@ const LoginSelection = React.memo(function LoginSelection() {
             Select your account to continue
           </p>
 
-          {/* Buttons with hover ripple & icons */}
+          {/* Login Options */}
           <div className="d-grid gap-3">
             <Link to="/login-user" className="cta-btn text-decoration-none">
               <i className="bi bi-person-circle me-2"></i>

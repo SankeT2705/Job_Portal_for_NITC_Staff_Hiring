@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import axios from "axios";
+import "./Home.css";
 
 const apiBase = process.env.REACT_APP_API_URL || "http://localhost:5000";
 const token = JSON.parse(localStorage.getItem("nitc_user") || "{}")?.token;
@@ -14,6 +15,35 @@ if (token) axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 const UserProfile = React.memo(function UserProfile() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("nitc-theme") === "dark";
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const syncTheme = () => {
+      const storedTheme = window.localStorage.getItem("nitc-theme");
+      setIsDarkMode(storedTheme === "dark");
+    };
+    syncTheme();
+    window.addEventListener("storage", syncTheme);
+    return () => {
+      window.removeEventListener("storage", syncTheme);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("nitc-theme", isDarkMode ? "dark" : "light");
+    }
+  }, [isDarkMode]);
+
+  const toggleTheme = useCallback(() => {
+    setIsDarkMode((prev) => !prev);
+  }, []);
 
   /** ---------------- Alerts (Bootstrap Toasts) ---------------- */
   const [alerts, setAlerts] = useState([]);
@@ -184,11 +214,41 @@ const UserProfile = React.memo(function UserProfile() {
     navigate("/");
   }, [logout, navigate, userKey]);
 
+  const backgroundUrl = useMemo(
+    () =>
+      `${process.env.PUBLIC_URL}${
+        isDarkMode ? "/images/UserLoginDark.png" : "/images/UserLoginLight.png"
+      }`,
+    [isDarkMode]
+  );
+
+  const pageStyle = useMemo(
+    () => ({
+      backgroundImage: `url('${backgroundUrl}')`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      backgroundRepeat: "no-repeat",
+      backgroundAttachment: "fixed",
+      backgroundColor: isDarkMode ? "#020817" : "#e8f1ff",
+      transition: "background-image 0.6s ease, background-color 0.6s ease",
+    }),
+    [backgroundUrl, isDarkMode]
+  );
+
   /** ---------------- Render ---------------- */
   return (
-    <div className="min-vh-100 d-flex flex-column bg-light">
+    <div
+      className={`min-vh-100 d-flex flex-column ${
+        isDarkMode ? "home-dark" : "home-light"
+      }`}
+      style={pageStyle}
+    >
       {/* Navbar */}
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary px-4">
+      <nav
+        className={`navbar navbar-expand-lg px-4 nav-overlay ${
+          isDarkMode ? "navbar-dark" : "navbar-light"
+        }`}
+      >
         <div className="container-fluid">
           <span className="navbar-brand fw-semibold">
             NITC Job Portal – {user.name}
@@ -204,8 +264,11 @@ const UserProfile = React.memo(function UserProfile() {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
+          <div
+            className="collapse navbar-collapse justify-content-end"
+            id="navbarNav"
+          >
+            <ul className="navbar-nav mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link className="nav-link" to="/dashboard-user">
                   Dashboard
@@ -225,6 +288,13 @@ const UserProfile = React.memo(function UserProfile() {
                 </button>
               </li>
             </ul>
+            <button
+              type="button"
+              className="theme-toggle ms-lg-3 mt-3 mt-lg-0"
+              onClick={toggleTheme}
+            >
+              {isDarkMode ? "Light Mode" : "Dark Mode"}
+            </button>
           </div>
         </div>
       </nav>
@@ -232,8 +302,8 @@ const UserProfile = React.memo(function UserProfile() {
       {/* Profile Card */}
       <div className="container py-5 flex-grow-1">
         <div
-          className="card shadow-lg border-0 p-4 mx-auto"
-          style={{ maxWidth: "600px", borderRadius: "16px" }}
+          className="card shadow-lg border-0 p-4 mx-auto surface-card surface-card--glass"
+          style={{ maxWidth: "600px" }}
         >
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h4 className="fw-bold text-primary mb-0">User Profile</h4>
@@ -258,7 +328,7 @@ const UserProfile = React.memo(function UserProfile() {
             </p>
           </div>
 
-          <hr />
+          <div className="surface-divider"></div>
 
           <div className="mt-3">
             <h5 className="fw-semibold mb-2">Skills</h5>
@@ -397,7 +467,7 @@ const UserProfile = React.memo(function UserProfile() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-primary text-white text-center py-3 mt-auto">
+      <footer className="bg-dark text-white text-center py-3 mt-auto">
         <small>
           © {new Date().getFullYear()} NITC Job Portal User. All rights
           reserved.
