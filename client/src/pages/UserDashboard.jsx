@@ -499,7 +499,7 @@ const UserDashboard = React.memo(function UserDashboard() {
 
   return (
     <div
-      className={`min-vh-100 d-flex flex-column ${
+      className={`app-shell min-vh-100 d-flex flex-column ${
         isDarkMode ? "home-dark" : "home-light"
       }`}
       style={pageStyle}
@@ -823,6 +823,9 @@ const UserDashboard = React.memo(function UserDashboard() {
         show={showViewModal}
         onHide={() => setShowViewModal(false)}
         centered
+        contentClassName={`modal-themed ${
+          isDarkMode ? "modal-themed-dark" : "modal-themed-light"
+        }`}
       >
         <Modal.Header closeButton>
           <Modal.Title>Job Details</Modal.Title>
@@ -867,7 +870,14 @@ const UserDashboard = React.memo(function UserDashboard() {
       </Modal>
 
       {/* Apply Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+        contentClassName={`modal-themed ${
+          isDarkMode ? "modal-themed-dark" : "modal-themed-light"
+        }`}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Apply for {selectedJob?.title}</Modal.Title>
         </Modal.Header>

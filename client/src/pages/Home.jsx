@@ -114,7 +114,7 @@ const Home = React.memo(function Home() {
 
   return (
     <div
-      className={`d-flex flex-column min-vh-100 ${
+      className={`home-page d-flex flex-column min-vh-100 ${
         isDarkMode ? "home-dark" : "home-light"
       }`}
       style={pageBackgroundStyle}

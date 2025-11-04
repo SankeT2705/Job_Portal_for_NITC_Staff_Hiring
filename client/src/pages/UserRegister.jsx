@@ -92,7 +92,7 @@ const UserRegister = React.memo(function UserRegister() {
 
   return (
     <div
-      className={`d-flex flex-column min-vh-100 ${
+      className={`app-shell d-flex flex-column min-vh-100 ${
         isDarkMode ? "home-dark" : "home-light"
       }`}
       style={{

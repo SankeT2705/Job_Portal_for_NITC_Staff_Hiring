@@ -170,7 +170,7 @@ const SuperAdminDashboard = React.memo(function SuperAdminDashboard() {
   /** ====== RENDER ====== */
   return (
     <div
-      className={`d-flex flex-column min-vh-100 ${
+      className={`super-admin-page d-flex flex-column min-vh-100 ${
         isDarkMode ? "home-dark" : "home-light"
       }`}
       style={pageStyle}

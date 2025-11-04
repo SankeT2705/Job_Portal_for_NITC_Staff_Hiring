@@ -1,3 +1,4 @@
+/* ===== Home hero animations (Home.jsx hero section) ===== */
 @keyframes phraseDrift {
   0% {
     transform: translateY(6px) scale(0.995) rotate(-0.3deg);
@@ -132,6 +133,7 @@
   }
 }
 
+/* Hero typography styling for landing screen copy */
 .hero-lead-text {
   position: relative;
   overflow: visible;
@@ -163,6 +165,7 @@
   opacity: 0.7;
 }
 
+/* Shimmer overlay for the landing headline */
 @keyframes heroLetterSheen {
   0% {
     background-position: 0% 50%;
@@ -174,6 +177,7 @@
     background-position: 0% 50%;
   }
 }
+/* Primary call-to-action buttons reused across pages */
 .cta-btn {
   background: radial-gradient(circle at 20% 20%, #f5fafe 0%, #d6e8ff 45%, #b7d0ff 100%);
   color: #082045;
@@ -200,6 +204,7 @@
   transform: translateY(1px) scale(0.99);
 }
 
+/* Ambient glow accents positioned behind hero phrases */
 .phrase-glow {
   position: absolute;
   inset: -12%;
@@ -220,86 +225,6 @@
   opacity: 0.52;
 }
 
-.highlight-card {
-  position: relative;
-  overflow: hidden;
-  border-radius: 16px;
-  padding: 1.8rem 1.5rem;
-  text-align: center;
-  animation-duration: 12s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-}
-
-.highlight-card::after {
-  content: "";
-  position: absolute;
-  inset: -35%;
-  background: radial-gradient(circle at 82% 78%, rgba(144, 184, 255, 0.32) 0%, rgba(144, 184, 255, 0) 70%);
-  opacity: 0.22;
-  pointer-events: none;
-  transition: opacity 0.45s ease;
-}
-
-.highlight-card:hover::after {
-  opacity: 0.48;
-}
-
-.highlight-card:hover {
-  transform: translateY(-12px) scale(1.02);
-}
-
-.highlight-card .feature-card__icon {
-  margin-bottom: 1.2rem;
-}
-
-.highlight-number {
-  display: inline-block;
-  font-family: "Poppins", "Segoe UI", sans-serif;
-  font-weight: 700;
-  font-size: clamp(2rem, 3.4vw, 2.6rem);
-  color: #1d4f9d;
-  letter-spacing: 0.02em;
-}
-
-.highlight-number--accent {
-  animation: accentShine 6s ease-in-out infinite;
-  color: #1a52c4;
-}
-
-.highlight-card .feature-card__divider {
-  margin: 1rem auto 1.05rem;
-}
-
-.highlight-card--orbit {
-  animation-name: statOrbit;
-}
-
-.highlight-card--sway {
-  animation-name: statSway;
-  animation-delay: 0.3s;
-}
-
-.highlight-card--pulse {
-  animation-name: statPulseSoft;
-  animation-delay: 0.6s;
-}
-
-.stat-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.4rem 0.85rem;
-  margin-bottom: 1.25rem;
-  border-radius: 999px;
-  background: rgba(32, 68, 140, 0.08);
-  color: #123c7a;
-  font-weight: 600;
-  font-size: 0.9rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .feature-card {
   position: relative;
   overflow: hidden;
@@ -310,16 +235,6 @@
   padding: 1.6rem 1.4rem;
   transition: transform 0.45s ease, box-shadow 0.45s ease;
   animation: featureLift 12s ease-in-out infinite;
-}
-
-.feature-card::before {
-  content: "";
-  position: absolute;
-  inset: -45%;
-  background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 60%);
-  opacity: 0.6;
-  animation: featureGlow 9s ease-in-out infinite;
-  pointer-events: none;
 }
 
 .feature-card:hover {
@@ -361,6 +276,7 @@
   opacity: 0.85;
 }
 
+/* Contact shortcut chips inside Home.jsx contact section */
 .contact-info-item {
   display: inline-flex;
   align-items: center;
@@ -410,6 +326,7 @@ a.contact-info-item:hover {
   margin: 0 auto;
 }
 
+/* Theme wrappers applied to the root div of most pages */
 .home-light {
   background-color: #ffffff;
   color: #123c7a;
@@ -429,6 +346,7 @@ a.contact-info-item:hover {
   color: #9ec4ff !important;
 }
 
+/* Shared circular button used to toggle dark/light themes */
 .theme-toggle {
   border-radius: 999px;
   padding: 0.35rem 1.1rem;
@@ -458,6 +376,7 @@ a.contact-info-item:hover {
   color: #f1f6ff;
 }
 
+/* Translucent navbar styling consumed by non-landing pages */
 .nav-overlay {
   background: transparent !important;
   border-bottom: none !important;
@@ -551,6 +470,7 @@ a.contact-info-item:hover {
   filter: invert(0);
 }
 
+/* Base card shell used for form panels and dashboards */
 .surface-card {
   background: rgba(255, 255, 255, 0.92);
   border-radius: 16px;
@@ -607,6 +527,7 @@ a.contact-info-item:hover {
   border: 1px solid rgba(120, 165, 255, 0.28);
 }
 
+/* Intensified glass panel wrapper for admin dashboards/forms */
 .glass-panel {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -621,6 +542,8 @@ a.contact-info-item:hover {
   color: #e7eeff;
 }
 
+
+/* responsible for making super admin cards transparent */
 .surface-card--transparent.glass-panel {
   background: inherit !important;
   border: inherit !important;
@@ -634,12 +557,13 @@ a.contact-info-item:hover {
   box-shadow: inherit !important;
 }
 
+/* making super admin card little opaque */
 .surface-card--transparent.glass-panel .surface-table tbody tr {
-  background: rgba(255, 255, 255, 0.48);
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .surface-card--transparent.glass-panel .surface-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.68);
+  background: rgba(255, 255, 255, 0.38);
 }
 
 .home-dark .surface-card--transparent.glass-panel .surface-table tbody tr {
@@ -650,36 +574,9 @@ a.contact-info-item:hover {
   background: rgba(18, 36, 68, 0.46);
 }
 
-.super-admin-dashboard {
-  font-family: "Poppins", "Segoe UI", sans-serif;
-  color: #0d1f3a;
-  letter-spacing: 0.015em;
-}
 
-.super-admin-dashboard .navbar-brand,
-.super-admin-dashboard .nav-link,
-.super-admin-dashboard .theme-toggle {
-  font-family: "Poppins", "Segoe UI", sans-serif;
-  letter-spacing: 0.045em;
-}
-
-.super-admin-dashboard .theme-toggle {
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.super-admin-dashboard.home-light .nav-overlay .navbar-brand,
-.super-admin-dashboard.home-light .nav-overlay .nav-link {
-  color: #0b2754 !important;
-  text-shadow: 0 16px 32px rgba(255, 255, 255, 0.52);
-}
-
-.super-admin-dashboard.home-dark .nav-overlay .navbar-brand,
-.super-admin-dashboard.home-dark .nav-overlay .nav-link {
-  color: #f4f8ff !important;
-  text-shadow: 0 20px 38px rgba(0, 0, 0, 0.65);
-}
-
+/* Super Admin dashboard typography and data table styling */
+/* Heading colors inside the Super Admin dashboard card */
 .super-admin-panel .text-primary,
 .super-admin-panel h3 {
   color: #dae3e4 !important;
@@ -687,7 +584,7 @@ a.contact-info-item:hover {
   font-weight: 700;
   text-shadow: 0 18px 36px rgba(7, 32, 88, 0.25);
 }
-
+/* Super Admin table headers (uppercase + tracking) */
 .super-admin-panel .surface-table thead {
   color: #0b2a59;
   font-weight: 700;
@@ -695,6 +592,7 @@ a.contact-info-item:hover {
   text-transform: uppercase;
 }
 
+/* Super Admin table body copy spacing */
 .super-admin-panel .surface-table tbody tr td,
 .super-admin-panel .surface-table tbody tr th {
   color: #1a3358;
@@ -762,19 +660,6 @@ a.contact-info-item:hover {
   border-bottom: 1px solid rgba(102, 146, 220, 0.22);
 }
 
-.surface-badge {
-  background: rgba(18, 60, 122, 0.08);
-  color: #123c7a;
-  border-radius: 999px;
-  padding: 0.2rem 0.75rem;
-  font-weight: 600;
-}
-
-.home-dark .surface-badge {
-  background: rgba(118, 168, 244, 0.22);
-  color: #e2ecff;
-}
-
 .themed-form-control {
   background: rgba(255, 255, 255, 0.82);
   border: 1px solid rgba(19, 70, 140, 0.18);
@@ -819,6 +704,16 @@ a.contact-info-item:hover {
   border-bottom: 1px solid rgba(18, 60, 122, 0.1);
 }
 
+
+
+
+
+
+
+
+
+
+/* Responsible for adding transparent bg to table col names */
 .home-dark .surface-table thead {
   background: rgba(40, 78, 150, 0.18);
   color: #e6efff;
@@ -836,6 +731,7 @@ a.contact-info-item:hover {
   transition: background 0.3s ease, transform 0.2s ease;
 }
 
+/* Responsible for transparency in super admin dashboard only*/
 .surface-table tbody tr td,
 .surface-table tbody tr th {
   background-color: transparent !important;
@@ -851,6 +747,8 @@ a.contact-info-item:hover {
   background: rgba(10, 20, 42, 0.82);
 }
 
+
+/* Responsible for making the colour of current admin tables light */
 .home-dark .surface-table tbody tr td,
 .home-dark .surface-table tbody tr th {
   border-color: rgba(118, 168, 244, 0.18);
@@ -861,7 +759,7 @@ a.contact-info-item:hover {
   background: rgba(16, 32, 64, 0.86);
 }
 
-.surface-divider {
+/* .surface-divider {
   height: 1px;
   width: 100%;
   background: linear-gradient(
@@ -871,61 +769,64 @@ a.contact-info-item:hover {
     rgba(18, 60, 122, 0)
   );
   margin: 1.5rem 0;
-}
+} */
 
-.home-dark .surface-divider {
+/* .home-dark .surface-divider {
   background: linear-gradient(
     90deg,
     rgba(118, 168, 244, 0),
     rgba(118, 168, 244, 0.35),
     rgba(118, 168, 244, 0)
   );
-}
+} */
 
-.surface-pill {
+/* .surface-pill {
   background: rgba(18, 60, 122, 0.08);
   color: #0f2d63;
   border-radius: 999px;
   padding: 0.25rem 0.9rem;
   font-size: 0.82rem;
   font-weight: 600;
-}
+} */
 
-.home-dark .surface-pill {
+/* .home-dark .surface-pill {
   background: rgba(118, 168, 244, 0.18);
   color: #e3ecff;
-}
+} */
 
-.surface-cta {
+/* .surface-cta {
   border-radius: 12px;
   border: 1px solid rgba(18, 60, 122, 0.18);
   background: linear-gradient(135deg, #f5faff 0%, #dbe9ff 100%);
   color: #102a5c;
   font-weight: 600;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+} */
 
-.surface-cta:hover {
+/* .surface-cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 16px 30px rgba(18, 60, 122, 0.22);
-}
+} */
 
-.home-dark .surface-cta {
+/* .home-dark .surface-cta {
   background: linear-gradient(135deg, #11274d 0%, #1b3e78 100%);
   border: 1px solid rgba(118, 168, 244, 0.35);
   color: #e8f1ff;
-}
+} */
 
-.home-dark .surface-cta:hover {
+/* .home-dark .surface-cta:hover {
   box-shadow: 0 18px 32px rgba(5, 12, 28, 0.65);
-}
+} */
 
+
+/* Responsible for changing transparency of cards in user dashboard */
 .home-light .card {
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(18, 60, 122, 0.08);
   box-shadow: 0 16px 32px rgba(15, 45, 99, 0.12);
 }
 
+/* Responsible for left side 3 cards to be dark in dark mode*/
 .home-dark .card {
   background: rgba(8, 16, 38, 0.82);
   border: 1px solid rgba(82, 126, 210, 0.28);
@@ -933,6 +834,7 @@ a.contact-info-item:hover {
   color: #e5ecff;
 }
 
+/* Responsible for highlighting muted text in admin dashboard inside cards */
 .home-dark .card .text-muted {
   color: rgba(208, 220, 245, 0.72) !important;
 }
@@ -960,6 +862,7 @@ a.contact-info-item:hover {
   color: rgba(200, 214, 240, 0.72) !important;
 }
 
+/* Responsible for form beautifiaction in admin dashboard create job form */
 .home-light .form-control {
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(18, 60, 122, 0.12);
@@ -974,11 +877,11 @@ a.contact-info-item:hover {
   border-radius: 12px;
   box-shadow: 0 12px 28px rgba(3, 10, 28, 0.55);
 }
-
+/* Responsibe for filling the boxes with dark colour in dark mode in admin dashboard form */
 .home-dark .form-control::placeholder {
   color: rgba(204, 216, 240, 0.6);
 }
-
+/* Responsible for adding highlights to the boarder of the form boxes in admin dashboard */
 .home-dark .form-control:focus {
   border-color: rgba(166, 210, 255, 0.55);
   box-shadow: 0 0 0 0.25rem rgba(102, 156, 255, 0.25);
@@ -997,6 +900,7 @@ a.contact-info-item:hover {
   border-radius: 12px;
 }
 
+/* Responsible for select drop down menu button to be dark in dark mode in admin dashboard */
 .home-dark .form-select {
   background: rgba(10, 22, 44, 0.78);
   border: 1px solid rgba(120, 165, 255, 0.28);
@@ -1015,6 +919,82 @@ a.contact-info-item:hover {
   border-color: rgba(38, 112, 210, 0.5);
   box-shadow: 0 0 0 0.25rem rgba(56, 118, 216, 0.2);
 }
+
+
+/* Shared translucent card styling for app-shell pages (excludes Home & Super Admin) */
+.app-shell.home-light .card,
+.app-shell.home-light .surface-card,
+.app-shell.home-light .surface-card--muted,
+.app-shell.home-light .surface-card--glass,
+.app-shell.home-light .glass-panel {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(18, 60, 122, 0.12);
+  color: #0f234b;
+  backdrop-filter: blur(14px);
+}
+
+.app-shell.home-dark .card,
+.app-shell.home-dark .surface-card,
+.app-shell.home-dark .surface-card--muted,
+.app-shell.home-dark .surface-card--glass,
+.app-shell.home-dark .glass-panel {
+  background: rgba(8, 18, 40, 0.45);
+  border-color: rgba(118, 168, 244, 0.26);
+  color: #e5ecff;
+  backdrop-filter: blur(18px);
+}
+
+.app-shell .card-header {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(18, 60, 122, 0.1);
+}
+
+.app-shell.home-dark .card-header {
+  border-bottom: 1px solid rgba(118, 168, 244, 0.18);
+}
+
+.app-shell.home-light .list-group-item {
+  background: rgba(255, 255, 255, 0.48);
+  border-color: rgba(18, 60, 122, 0.08);
+}
+
+.app-shell.home-dark .list-group-item {
+  background: rgba(10, 24, 46, 0.48);
+  border-color: rgba(118, 168, 244, 0.26);
+  color: #e5ecff;
+}
+
+.app-shell.home-light .surface-table tbody tr {
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.app-shell.home-dark .surface-table tbody tr {
+  background: rgba(10, 22, 46, 0.5);
+  color: #e5ecff;
+}
+
+.app-shell.home-light .surface-table tbody tr:hover {
+  background: rgba(237, 245, 255, 0.72);
+}
+
+.app-shell.home-dark .surface-table tbody tr:hover {
+  background: rgba(18, 34, 68, 0.58);
+}
+
+.app-shell.home-light .form-control,
+.app-shell.home-light .form-select,
+.app-shell.home-light .themed-form-control {
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.app-shell.home-dark .form-control,
+.app-shell.home-dark .form-select,
+.app-shell.home-dark .themed-form-control {
+  background: rgba(10, 26, 52, 0.5);
+}
+
+
+
 
 .home-light .modal-content {
   background: rgba(255, 255, 255, 0.95) !important;

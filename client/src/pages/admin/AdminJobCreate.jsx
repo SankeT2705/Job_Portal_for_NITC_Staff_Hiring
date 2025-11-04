@@ -187,7 +187,7 @@ const AdminJobCreate = React.memo(function AdminJobCreate() {
 
   return (
     <div
-      className={`min-vh-100 d-flex flex-column ${
+      className={`app-shell min-vh-100 d-flex flex-column ${
         isDarkMode ? "home-dark" : "home-light"
       }`}
       style={pageStyle}

@@ -156,7 +156,7 @@ const AdminJobView = React.memo(function AdminJobView() {
   if (loading) {
     return (
       <div
-        className={`min-vh-100 d-flex justify-content-center align-items-center text-muted ${
+        className={`app-shell min-vh-100 d-flex justify-content-center align-items-center text-muted ${
           isDarkMode ? "home-dark" : "home-light"
         }`}
         style={pageStyle}
@@ -170,7 +170,7 @@ const AdminJobView = React.memo(function AdminJobView() {
   if (errorMsg || !job) {
     return (
       <div
-        className={`d-flex flex-column justify-content-center align-items-center min-vh-100 ${
+        className={`app-shell d-flex flex-column justify-content-center align-items-center min-vh-100 ${
           isDarkMode ? "home-dark" : "home-light"
         }`}
         style={pageStyle}
@@ -193,7 +193,7 @@ const AdminJobView = React.memo(function AdminJobView() {
   /** ========== Main UI ========== */
   return (
     <div
-      className={`min-vh-100 d-flex flex-column ${
+      className={`app-shell min-vh-100 d-flex flex-column ${
         isDarkMode ? "home-dark" : "home-light"
       }`}
       style={pageStyle}

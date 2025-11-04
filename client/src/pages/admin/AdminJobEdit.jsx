@@ -161,7 +161,7 @@ const AdminJobEdit = React.memo(function AdminJobEdit() {
   if (loading && !form.title && !errorMsg) {
     return (
       <div
-        className={`min-vh-100 d-flex justify-content-center align-items-center text-muted ${
+        className={`app-shell min-vh-100 d-flex justify-content-center align-items-center text-muted ${
           isDarkMode ? "home-dark" : "home-light"
         }`}
         style={{
@@ -207,7 +207,7 @@ const AdminJobEdit = React.memo(function AdminJobEdit() {
 
   return (
     <div
-      className={`min-vh-100 d-flex flex-column ${
+      className={`app-shell min-vh-100 d-flex flex-column ${
         isDarkMode ? "home-dark" : "home-light"
       }`}
       style={pageStyle}
