@@ -16,10 +16,22 @@ const RequestAdmin = React.memo(function RequestAdmin() {
   const handleChange = (e) =>
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
+  const [invalidEmail, setInvalidEmail] = useState(false); // ✅ added
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
+    setInvalidEmail(false); // ✅ reset on new submit
+
+    // ✅ Email validation before sending to backend
+    if (!form.email.toLowerCase().endsWith("@nitc.ac.in")) {
+      setInvalidEmail(true);
+      setLoading(false);
+      setMessage(
+        "⚠️ Please use Institutional Email only"
+      );
+      return;
+    }
 
     try {
       const { data } = await axios.post(
@@ -183,9 +195,12 @@ const RequestAdmin = React.memo(function RequestAdmin() {
                 type="email"
                 name="email"
                 value={form.email}
-                onChange={handleChange}
+                onChange={(e) => {
+                  handleChange(e);
+                  setInvalidEmail(false); // ✅ clear warning as user types again
+                }}
                 placeholder="Institutional Email"
-                className="form-control"
+                className={`form-control ${invalidEmail ? "is-invalid" : ""}`} // ✅ added red border
                 required
               />
             </div>
@@ -207,7 +222,8 @@ const RequestAdmin = React.memo(function RequestAdmin() {
             >
               {loading ? (
                 <>
-                  <Spinner animation="border" size="sm" className="me-2" /> Submitting...
+                  <Spinner animation="border" size="sm" className="me-2" />{" "}
+                  Submitting...
                 </>
               ) : (
                 "Submit Request"
@@ -226,7 +242,9 @@ const RequestAdmin = React.memo(function RequestAdmin() {
           )}
 
           <div className="text-center mt-3">
-            <small className={isDarkMode ? "text-light opacity-75" : "text-muted"}>
+            <small
+              className={isDarkMode ? "text-light opacity-75" : "text-muted"}
+            >
               Already an admin?{" "}
               <Link
                 to="/login-admin"

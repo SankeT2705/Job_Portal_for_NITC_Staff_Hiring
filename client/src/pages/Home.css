@@ -1275,3 +1275,7 @@ a.contact-info-item:hover {
   background: rgba(6, 12, 28, 0.78);
   border: 1px solid rgba(94, 138, 210, 0.35);
 }
+.is-invalid {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.15rem rgba(220, 53, 69, 0.25);
+}
