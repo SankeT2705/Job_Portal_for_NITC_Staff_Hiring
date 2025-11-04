@@ -927,7 +927,7 @@ a.contact-info-item:hover {
 .app-shell.home-light .surface-card--muted,
 .app-shell.home-light .surface-card--glass,
 .app-shell.home-light .glass-panel {
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.46);
   border-color: rgba(18, 60, 122, 0.12);
   color: #0f234b;
   backdrop-filter: blur(14px);
