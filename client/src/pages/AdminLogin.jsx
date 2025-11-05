@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Modal, Button, Form } from "react-bootstrap";
+import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "./Home.css"; // reuse animations, cta-btn, theme classes
 
@@ -16,7 +17,12 @@ const AdminLogin = React.memo(function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // theme toggle
+  // Forgot Password state
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
+
+  // Theme
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== "undefined") {
       return window.localStorage.getItem("nitc-theme") === "dark";
@@ -34,6 +40,7 @@ const AdminLogin = React.memo(function AdminLogin() {
     }
   }, [isDarkMode]);
 
+  // Admin Login Handler
   const handleLogin = useCallback(
     async (e) => {
       e.preventDefault();
@@ -45,7 +52,7 @@ const AdminLogin = React.memo(function AdminLogin() {
         await login("admin", email.trim(), password);
         navigate("/admin");
       } catch (err) {
-        console.error("Login failed:", err);
+        console.error("Admin login failed:", err);
         const msg =
           err.response?.data?.message ||
           "❌ Invalid credentials. Please check your email or password.";
@@ -57,6 +64,30 @@ const AdminLogin = React.memo(function AdminLogin() {
     [email, password, login, navigate, loading]
   );
 
+  // Forgot Password Handler
+  const handleForgotPassword = async () => {
+    if (!resetEmail) {
+      alert("Please enter your email address.");
+      return;
+    }
+
+    try {
+      setResetLoading(true);
+      await axios.post(`${process.env.REACT_APP_API_URL}/auth/forgot-password`, {
+        email: resetEmail,
+      });
+      alert("✅ Password reset link sent to your email!");
+      setShowForgotModal(false);
+      setResetEmail("");
+    } catch (err) {
+      console.error("Forgot password (admin) error:", err);
+      alert("❌ Unable to send reset link. Please check the email or try again later.");
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  // Background Styling
   const heroSectionStyle = React.useMemo(
     () => ({
       backgroundImage: `url('${
@@ -215,6 +246,18 @@ const AdminLogin = React.memo(function AdminLogin() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+
+            {/* Forgot Password Link */}
+            <div className="text-end mb-3">
+              <button
+                type="button"
+                className="btn btn-link text-decoration-none p-0"
+                onClick={() => setShowForgotModal(true)}
+              >
+                Forgot Password?
+              </button>
+            </div>
+
             <button
               type="submit"
               className="cta-btn w-100 fw-semibold py-2"
@@ -243,6 +286,43 @@ const AdminLogin = React.memo(function AdminLogin() {
           </div>
         </div>
       </section>
+
+      {/* Forgot Password Modal */}
+      <Modal
+        show={showForgotModal}
+        onHide={() => setShowForgotModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Reset Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Enter your registered admin email</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                required
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowForgotModal(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleForgotPassword}
+            disabled={resetLoading}
+          >
+            {resetLoading ? "Sending..." : "Send Reset Link"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       {/* Footer */}
       <footer className="bg-dark text-white text-center py-3 mt-auto">

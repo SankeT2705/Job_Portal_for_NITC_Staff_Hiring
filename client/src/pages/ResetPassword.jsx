@@ -17,6 +17,7 @@ const ResetPassword = React.memo(function ResetPassword() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  // Theme management
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== "undefined") {
       return window.localStorage.getItem("nitc-theme") === "dark";
@@ -34,6 +35,7 @@ const ResetPassword = React.memo(function ResetPassword() {
     }
   }, [isDarkMode]);
 
+  // Background style
   const heroSectionStyle = useMemo(
     () => ({
       backgroundImage: `url('${
@@ -55,26 +57,44 @@ const ResetPassword = React.memo(function ResetPassword() {
     [isDarkMode]
   );
 
+  // Handle password reset
   const handleResetPassword = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setMessage("Passwords do not match!");
+      setMessage("❌ Passwords do not match!");
       return;
     }
 
     try {
       setLoading(true);
-      await axios.post(`${process.env.REACT_APP_API_URL}/auth/reset-password`, {
-        email,
-        newPassword,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/reset-password`,
+        {
+          email,
+          newPassword,
+        }
+      );
+
+      const { role } = response.data;
+
       setMessage("✅ Password reset successful! Redirecting to login...");
-      setTimeout(() => navigate("/login-user"), 2500);
+
+      // ✅ Redirect based on actual role from backend
+      const redirectPath =
+        role === "admin" ? "/login-admin" : "/login-user";
+
+      setTimeout(() => navigate(redirectPath), 2500);
     } catch (err) {
-      console.error(err);
-      setMessage("❌ Error resetting password. Please try again later.");
+      console.error("Reset password error:", err);
+      const msg =
+        err.response?.data?.message ||
+        "Error resetting password. Please try again later.";
+      setMessage(`❌ ${msg}`);
     } finally {
       setLoading(false);
+
+      // Auto clear message
+      setTimeout(() => setMessage(""), 4000);
     }
   };
 
@@ -137,7 +157,7 @@ const ResetPassword = React.memo(function ResetPassword() {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Main Section */}
       <section
         className="text-center d-flex flex-column justify-content-center align-items-center position-relative w-100 flex-grow-1 px-3"
         style={heroSectionStyle}
@@ -192,6 +212,7 @@ const ResetPassword = React.memo(function ResetPassword() {
                 required
               />
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Confirm Password</Form.Label>
               <Form.Control

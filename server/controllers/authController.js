@@ -294,15 +294,18 @@ export const resetPassword = async (req, res) => {
         .status(400)
         .json({ message: "Email and new password are required." });
     }
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found." });
     }
     user.password = newPassword;
     await user.save();
-    console.log(`✅ Password successfully reset for ${email}`);
+
+    console.log(`✅ Password reset for ${email} (${user.role})`);
     res.status(200).json({
-      message: "Password reset successful. You can now log in with your new password.",
+      message: "Password reset successful.",
+      role: user.role || "user", 
     });
   } catch (error) {
     console.error("❌ Reset Password Error:", error);
