@@ -154,7 +154,7 @@ const UserLogin = React.memo(function UserLogin() {
                   className="nav-link active fw-semibold px-3"
                   to="/login-user"
                 >
-                  Login
+                 User Login
                 </Link>
               </li>
             </ul>
