@@ -8,6 +8,10 @@ import {
 } from "../controllers/authController.js";
 import { updatePassword } from "../controllers/authController.js";
 import { forgotPassword } from "../controllers/authController.js";  // Import controller
+import { resetPassword } from "../controllers/authController.js";
+
+
+
 
 
 const router = express.Router();
@@ -23,4 +27,5 @@ router.post("/request-admin", requestAdminAccess);   // User requests admin
 router.get("/admin-requests", getAdminRequests);     // Super admin fetches requests
 router.post("/handle-admin-request/:id", handleAdminRequest); // Accept/Reject
 router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
 export default router;
