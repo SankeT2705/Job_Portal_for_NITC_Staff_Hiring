@@ -52,6 +52,7 @@ app.use("/api/jobs", jobRoutes);
 app.use("/api/applications", applicationRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/users", userRoutes);
+app.use("/auth", authRoutes);
 
 //Default route
 app.get("/", (req, res) => {
@@ -65,6 +66,7 @@ app.use((err, req, res, next) => {
 });
 
 app.use("/api/superadmin", superAdminRoutes);
+
 
 //Export app for Vercel serverless functions
 export default app;

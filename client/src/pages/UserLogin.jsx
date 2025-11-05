@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Modal, Button, Form } from "react-bootstrap";
+import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "./Home.css"; // reuse Home page styles (animations, cta-btn, theme)
 
@@ -15,6 +16,11 @@ const UserLogin = React.memo(function UserLogin() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Forgot Password states
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
 
   // theme toggle
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -33,6 +39,29 @@ const UserLogin = React.memo(function UserLogin() {
       window.localStorage.setItem("nitc-theme", isDarkMode ? "dark" : "light");
     }
   }, [isDarkMode]);
+
+  // Forgot Password Handler
+  const handleForgotPassword = async () => {
+    if (!resetEmail) {
+      alert("Please enter your email address.");
+      return;
+    }
+
+    try {
+      setResetLoading(true);
+      await axios.post(`${process.env.REACT_APP_API_URL}/auth/forgot-password`, {
+        email: resetEmail,
+      });
+      alert("✅ Password reset link sent to your email!");
+      setShowForgotModal(false);
+      setResetEmail("");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Unable to send reset link. Please check your email or try again later.");
+    } finally {
+      setResetLoading(false);
+    }
+  };
 
   const handleLogin = useCallback(
     async (e) => {
@@ -215,6 +244,18 @@ const UserLogin = React.memo(function UserLogin() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+
+            {/* Forgot Password Link */}
+            <div className="text-end mb-3">
+              <button
+                type="button"
+                className="btn btn-link text-decoration-none p-0"
+                onClick={() => setShowForgotModal(true)}
+              >
+                Forgot Password?
+              </button>
+            </div>
+
             <button
               type="submit"
               className="cta-btn w-100 fw-semibold py-2"
@@ -244,6 +285,43 @@ const UserLogin = React.memo(function UserLogin() {
         </div>
       </section>
 
+      {/* Forgot Password Modal */}
+      <Modal
+        show={showForgotModal}
+        onHide={() => setShowForgotModal(false)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Reset Password</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group>
+              <Form.Label>Enter your registered email</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                required
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowForgotModal(false)}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleForgotPassword}
+            disabled={resetLoading}
+          >
+            {resetLoading ? "Sending..." : "Send Reset Link"}
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       {/* Footer */}
       <footer className="bg-dark text-white text-center py-3 mt-auto">
         <small>
@@ -255,232 +333,3 @@ const UserLogin = React.memo(function UserLogin() {
 });
 
 export default UserLogin;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState, useCallback } from "react";
-// import { Link, useNavigate } from "react-router-dom";
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import "bootstrap/dist/js/bootstrap.bundle.min.js";
-// import { Spinner } from "react-bootstrap";
-// import { useAuth } from "../context/AuthContext";
-
-// const UserLogin = React.memo(function UserLogin() {
-//   const { login } = useAuth();
-//   const navigate = useNavigate();
-
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [loading, setLoading] = useState(false);
-//   const [errorMsg, setErrorMsg] = useState("");
-
-//   const handleLogin = useCallback(
-//     async (e) => {
-//       e.preventDefault();
-//       if (loading) return;
-
-//       setLoading(true);
-//       setErrorMsg("");
-
-//       try {
-//         const user = await login("user", email.trim(), password);
-        
-//         navigate("/dashboard-user");
-//       } catch (err) {
-//         console.error("Login failed:", err);
-//         const msg =
-//           err.response?.data?.message ||
-//           "❌ Invalid credentials. Please check your email or password.";
-//         setErrorMsg(msg);
-//       } finally {
-//         setLoading(false);
-//       }
-//     },
-//     [email, password, login, navigate, loading]
-//   );
-
-//   return (
-//     <div className="d-flex flex-column min-vh-100 bg-light">
-//       {/* Navbar */}
-//       <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
-//         <div className="container">
-//           <Link className="navbar-brand fw-semibold" to="/">
-//             NITC Job Portal
-//           </Link>
-//           <button
-//             className="navbar-toggler"
-//             type="button"
-//             data-bs-toggle="collapse"
-//             data-bs-target="#navbarNav"
-//             aria-controls="navbarNav"
-//             aria-expanded="false"
-//             aria-label="Toggle navigation"
-//           >
-//             <span className="navbar-toggler-icon"></span>
-//           </button>
-//           <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
-//             <ul className="navbar-nav">
-//               <li className="nav-item">
-//                 <Link className="nav-link" to="/">
-//                   Home
-//                 </Link>
-//               </li>
-//               <li className="nav-item">
-//                 <Link className="nav-link active" to="/login-user">
-//                   Login
-//                 </Link>
-//               </li>
-//             </ul>
-//           </div>
-//         </div>
-//       </nav>
-
-//       {/* Login Card */}
-//       <div className="flex-grow-1 d-flex justify-content-center align-items-center py-5">
-//         <div className="card shadow-lg border-0 p-4" style={{ width: "350px", borderRadius: "16px" }}>
-//           <h4 className="text-center mb-4 fw-bold text-primary">User Login</h4>
-
-//           {errorMsg && (
-//             <div className="alert alert-danger py-2" role="alert">
-//               {errorMsg}
-//             </div>
-//           )}
-
-//           <form onSubmit={handleLogin} noValidate>
-//             <div className="mb-3">
-//               <input
-//                 type="email"
-//                 className="form-control"
-//                 placeholder="Email"
-//                 required
-//                 autoComplete="username"
-//                 value={email}
-//                 onChange={(e) => setEmail(e.target.value)}
-//               />
-//             </div>
-//             <div className="mb-3">
-//               <input
-//                 type="password"
-//                 className="form-control"
-//                 placeholder="Password"
-//                 required
-//                 autoComplete="current-password"
-//                 value={password}
-//                 onChange={(e) => setPassword(e.target.value)}
-//               />
-//             </div>
-//             <button
-//               type="submit"
-//               className="btn btn-primary w-100 mb-3 fw-semibold"
-//               disabled={loading || !email || !password}
-//             >
-//               {loading ? (
-//                 <>
-//                   <Spinner animation="border" size="sm" className="me-2" />
-//                   Logging in...
-//                 </>
-//               ) : (
-//                 "Login"
-//               )}
-//             </button>
-//           </form>
-
-//           <div className="text-center">
-//             <small>
-//               Don’t have an account?{" "}
-//               <Link to="/register-user" className="fw-semibold text-decoration-none">
-//                 Register
-//               </Link>
-//             </small>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Footer */}
-//       <footer className="bg-dark text-white text-center py-3 mt-auto">
-//         <small>© {new Date().getFullYear()} NITC Job Portal | Designed by Team 6</small>
-//       </footer>
-//     </div>
-//   );
-// });
-
-// export default UserLogin;

@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import ResetPassword from "./pages/ResetPassword";
 
 // Context
 import { AuthProvider } from "./context/AuthContext";
@@ -47,6 +48,7 @@ function App() {
             <Route path="/login-admin" element={<AdminLogin />} />
             <Route path="/register-user" element={<UserRegister />} />
             <Route path="/request-admin" element={<RequestAdmin />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route
               path="/superadmin-dashboard"
               element={<SuperAdminDashboard />}
