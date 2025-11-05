@@ -78,8 +78,6 @@ const ResetPassword = React.memo(function ResetPassword() {
       const { role } = response.data;
 
       setMessage("✅ Password reset successful! Redirecting to login...");
-
-      // ✅ Redirect based on actual role from backend
       const redirectPath =
         role === "admin" ? "/login-admin" : "/login-user";
 
@@ -92,8 +90,6 @@ const ResetPassword = React.memo(function ResetPassword() {
       setMessage(`❌ ${msg}`);
     } finally {
       setLoading(false);
-
-      // Auto clear message
       setTimeout(() => setMessage(""), 4000);
     }
   };
