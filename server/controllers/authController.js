@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import AdminRequest from "../models/AdminRequest.js";
 import { transporter } from "../config/email.js";
-
+import nodemailer from "nodemailer";
 export const requestAdminAccess = async (req, res) => {
   try {
     const { name, email, department } = req.body;
@@ -233,3 +233,53 @@ export const updatePassword = async (req, res) => {
     res.status(500).json({ message: "Server error while updating password" });
   }
 };
+
+
+//FORGOT PASSWORD
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // 1️⃣ Check if user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found with that email." });
+    }
+
+    // 2️⃣ Configure mail transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    // 3️⃣ Compose the email
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset Request - NITC Job Portal",
+      text: `
+Hi ${user.name || "User"},
+
+You requested a password reset. Please click the link below to reset your password:
+
+http://localhost:3000/reset-password?email=${email}
+
+If you did not request this, please ignore this email.
+      `,
+    };
+
+    // 4️⃣ Send the email
+    await transporter.sendMail(mailOptions);
+    console.log("Password reset email sent to:", email);
+
+    // 5️⃣ Respond to frontend
+    return res.status(200).json({ message: "Password reset email sent successfully!" });
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+    return res.status(500).json({ message: "Server error. Try again later." });
+  }
+};
+

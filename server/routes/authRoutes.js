@@ -7,7 +7,7 @@ import {
   handleAdminRequest,
 } from "../controllers/authController.js";
 import { updatePassword } from "../controllers/authController.js";
-
+import { forgotPassword } from "../controllers/authController.js";  // Import controller
 
 
 const router = express.Router();
@@ -22,5 +22,5 @@ router.get("/profile", protect, getProfile);
 router.post("/request-admin", requestAdminAccess);   // User requests admin
 router.get("/admin-requests", getAdminRequests);     // Super admin fetches requests
 router.post("/handle-admin-request/:id", handleAdminRequest); // Accept/Reject
-
+router.post("/forgot-password", forgotPassword);
 export default router;
