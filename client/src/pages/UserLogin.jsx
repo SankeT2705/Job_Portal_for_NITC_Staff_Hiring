@@ -49,9 +49,9 @@ const UserLogin = React.memo(function UserLogin() {
 
     try {
       setResetLoading(true);
-      await axios.post(`${process.env.REACT_APP_API_URL}/auth/forgot-password`, {
-        email: resetEmail,
-      });
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/forgot-password`, {
+  email: resetEmail,
+});
       alert("✅ Password reset link sent to your email!");
       setShowForgotModal(false);
       setResetEmail("");

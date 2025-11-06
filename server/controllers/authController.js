@@ -167,7 +167,7 @@ export const getAdminRequests = async (req, res) => {
 
       //Send Email
       await transporter.sendMail({
-        from: `"NITC Job Portal" <${process.env.EMAIL_USER}>`,
+        from: `"NITC Job Portal" <${process.env.SMTP_USER}>`,
         to: request.email,
         subject: "Your Admin Access Approved ✅",
         html: `
@@ -191,7 +191,7 @@ export const getAdminRequests = async (req, res) => {
 
       // Send rejection email
       await transporter.sendMail({
-        from: `"NITC Job Portal" <${process.env.EMAIL_USER}>`,
+        from: `"NITC Job Portal" <${process.env.SMTP_USER}>`,
         to: request.email,
         subject: "Admin Request Rejected ❌",
         html: `
@@ -250,14 +250,14 @@ export const forgotPassword = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
 
     // 3️⃣ Compose the email
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: process.env.SMTP_USER,
       to: email,
       subject: "Password Reset Request - NITC Job Portal",
       text: `
@@ -265,7 +265,8 @@ Hi ${user.name || "User"},
 
 You requested a password reset. Please click the link below to reset your password:
 
-http://localhost:3000/reset-password?email=${email}
+ ${process.env.CLIENT_URL || "http://localhost:3000"}/reset-password?email=${encodeURIComponent(email)}
+
 
 If you did not request this, please ignore this email.
       `,
