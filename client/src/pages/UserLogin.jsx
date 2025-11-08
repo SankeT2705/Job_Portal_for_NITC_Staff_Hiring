@@ -7,9 +7,9 @@ import { Spinner, Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "./Home.css"; // reuse Home page styles (animations, cta-btn, theme)
-import { GoogleLogin } from "@react-oauth/google";
+ 
 const UserLogin = React.memo(function UserLogin() {
-const { loginWithGoogle } = useAuth();
+ 
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -107,27 +107,6 @@ const { loginWithGoogle } = useAuth();
     }),
     [isDarkMode]
   );
-  
-  
-const handleGoogleLogin = async (credentialResponse) => {
-  try {
-    const { credential } = credentialResponse;
-    setLoading(true);
-    const loggedInUser = await loginWithGoogle(credential);
-
-    // Redirect after login
-    if (loggedInUser.role === "admin") {
-      navigate("/dashboard-admin");
-    } else {
-      navigate("/dashboard-user");
-    }
-  } catch (err) {
-    console.error("Google login error:", err);
-    setErrorMsg("❌ Google login failed. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
   return (
     <div
       className={`app-shell d-flex flex-column min-vh-100 ${
@@ -312,25 +291,6 @@ const handleGoogleLogin = async (credentialResponse) => {
   />
 </div>
 
-{/* Google Login Button */}
-<div className="d-flex justify-content-center mt-3">
-  <div
-    style={{
-      width: "100%",
-      display: "flex",
-      justifyContent: "center",
-    }}
-  >
-     <GoogleLogin
-  onSuccess={handleGoogleLogin}
-  onError={() => console.log("Login Failed")}
-  theme={isDarkMode ? "filled_black" : "outline"}
-  shape="rectangular"
-  size="large"
-  width="320"
-/>
-  </div>
-  </div>
   </form>
           <div className="text-center mt-4">
             <small className={isDarkMode ? "text-muted-dark" : "text-muted"}>
