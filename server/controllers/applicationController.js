@@ -34,11 +34,11 @@ export const applyForJob = async (req, res) => {
     await job.save();
 
     res.status(201).json({
-      message: "✅ Application submitted successfully.",
+      message: "Application submitted successfully.",
       application: newApp,
     });
   } catch (err) {
-    console.error("❌ Error in applyForJob:", err);
+    console.error("Error in applyForJob:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -55,7 +55,7 @@ export const getUserApplications = async (req, res) => {
 
     res.json(applications);
   } catch (err) {
-    console.error("❌ Error fetching user applications:", err);
+    console.error("Error fetching user applications:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -92,13 +92,13 @@ export const getAdminApplications = async (req, res) => {
 
     res.json(formattedApps);
   } catch (err) {
-    console.error("❌ Error fetching admin applications:", err);
+    console.error("Error fetching admin applications:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
 /**
- * ✅ Update application status (Admin only)
+ *Update application status (Admin only)
  */
   export const updateApplicationStatus = async (req, res) => {
   try {
@@ -110,11 +110,11 @@ export const getAdminApplications = async (req, res) => {
       return res.status(404).json({ message: "Application not found" });
     }
 
-    // ✅ Update status
+    // Update status
     application.status = status;
     await application.save();
 
-    // ✅ Get applicant details
+    //Get applicant details
     const applicantEmail = application.applicantEmail || application.applicant;
     const applicant = await User.findOne({ email: applicantEmail });
 
@@ -157,12 +157,12 @@ export const getAdminApplications = async (req, res) => {
         message: messageText,
       });
 
-      console.log(`📩 ${status} notification sent to ${applicant.email}`);
+      console.log(`${status} notification sent to ${applicant.email}`);
     }
 
-    res.json({ message: `✅ Application status updated to '${status}' and user notified.` });
+    res.json({ message: `Application status updated to '${status}' and user notified.` });
   } catch (err) {
-    console.error("❌ Error updating status:", err);
+    console.error("Error updating status:", err);
     res.status(500).json({ message: "Server error while updating status" });
   }
 };

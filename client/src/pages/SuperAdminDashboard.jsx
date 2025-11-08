@@ -87,9 +87,9 @@ const SuperAdminDashboard = React.memo(function SuperAdminDashboard() {
         setAdmins(data.admins || []);
       }
     } catch (err) {
-      console.error("❌ Failed to fetch data:", err);
+      console.error("Failed to fetch data:", err);
       pushAlert(
-        "⚠️ Failed to load data. Please check your network or server.",
+        "Failed to load data. Please check your network or server.",
         "danger"
       );
     } finally {
@@ -110,13 +110,13 @@ const SuperAdminDashboard = React.memo(function SuperAdminDashboard() {
           action,
         });
         pushAlert(
-          data?.message || `✅ Request ${action}ed successfully.`,
+          data?.message || `Request ${action}ed successfully.`,
           "success"
         );
         setRefreshKey((k) => k + 1);
       } catch (err) {
-        console.error("❌ Error handling request:", err);
-        pushAlert("❌ Failed to update admin request.", "danger");
+        console.error("Error handling request:", err);
+        pushAlert("Failed to update admin request.", "danger");
       } finally {
         setLoading(false);
       }
@@ -132,11 +132,11 @@ const SuperAdminDashboard = React.memo(function SuperAdminDashboard() {
         const { data } = await api.delete(
           `/api/superadmin/delete-admin/${id}`
         );
-        pushAlert(data?.message || "✅ Admin deleted successfully.", "success");
+        pushAlert(data?.message || "Admin deleted successfully.", "success");
         setRefreshKey((k) => k + 1);
       } catch (err) {
-        console.error("❌ Error deleting admin:", err);
-        pushAlert("⚠️ Failed to delete admin.", "danger");
+        console.error("Error deleting admin:", err);
+        pushAlert("Failed to delete admin.", "danger");
       } finally {
         setLoading(false);
       }

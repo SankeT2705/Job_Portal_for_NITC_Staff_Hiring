@@ -35,7 +35,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        console.warn(`❌ Blocked by CORS: ${origin}`);
+        console.warn(`Blocked by CORS: ${origin}`);
         callback(new Error("CORS not allowed"));
       }
     },
@@ -56,12 +56,12 @@ app.use("/auth", authRoutes);
 
 //Default route
 app.get("/", (req, res) => {
-  res.send("🚀 NITC Job Portal Backend Running on Vercel + MongoDB Atlas!");
+  res.send("NITC Job Portal Backend Running on Vercel + MongoDB Atlas!");
 });
 
 //Error handling middleware
 app.use((err, req, res, next) => {
-  console.error("❌ Server Error:", err.message);
+  console.error("Server Error:", err.message);
   res.status(500).json({ message: "Internal Server Error" });
 });
 
@@ -75,6 +75,6 @@ export default app;
 if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () =>
-    console.log(`🌐 Local server running on http://localhost:${PORT}`)
+    console.log(`Local server running on http://localhost:${PORT}`)
   );
 }

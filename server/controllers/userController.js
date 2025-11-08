@@ -8,7 +8,7 @@ export const getUserProfile = async (req, res) => {
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (err) {
-    console.error("❌ getUserProfile error:", err);
+    console.error("getUserProfile error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -35,7 +35,7 @@ export const updateUserProfile = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("❌ updateUserProfile error:", err);
+    console.error("updateUserProfile error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -56,7 +56,7 @@ export const addSkill = async (req, res) => {
 
     res.json({ message: "Skill added", skills: user.skills });
   } catch (err) {
-    console.error("❌ addSkill error:", err);
+    console.error("addSkill error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -73,7 +73,7 @@ export const deleteSkill = async (req, res) => {
 
     res.json({ message: "Skill removed", skills: user.skills });
   } catch (err) {
-    console.error("❌ deleteSkill error:", err);
+    console.error("deleteSkill error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
