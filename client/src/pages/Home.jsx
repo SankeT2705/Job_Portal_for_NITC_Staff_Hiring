@@ -47,23 +47,42 @@ const Home = React.memo(function Home() {
     const player = contactLottieRef.current;
     if (!player) return;
 
+    // Make sure loop/autoplay are always enabled on the custom element
+    player.setAttribute("loop", "true");
+    player.setAttribute("autoplay", "true");
+
     const ensurePlaying = () => {
       try {
-        player.play();
+        if (typeof player.seek === "function" && player.state === "stopped") {
+          player.seek(0);
+        }
+        if (typeof player.play === "function") {
+          player.play();
+        }
       } catch {
+        // Ignore player errors – retry will be triggered via interval/listeners
       }
     };
 
-    player.addEventListener("complete", ensurePlaying);
-    player.addEventListener("pause", ensurePlaying);
-    player.addEventListener("stop", ensurePlaying);
+    const handleVisibilityChange = () => {
+      if (!document.hidden) ensurePlaying();
+    };
+
+    const keepAlive = window.setInterval(ensurePlaying, 15000);
+
+    ["ready", "complete", "pause", "stop"].forEach((eventName) =>
+      player.addEventListener(eventName, ensurePlaying)
+    );
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     ensurePlaying();
 
     return () => {
-      player.removeEventListener("complete", ensurePlaying);
-      player.removeEventListener("pause", ensurePlaying);
-      player.removeEventListener("stop", ensurePlaying);
+      ["ready", "complete", "pause", "stop"].forEach((eventName) =>
+        player.removeEventListener(eventName, ensurePlaying)
+      );
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.clearInterval(keepAlive);
     };
   }, []);
 
