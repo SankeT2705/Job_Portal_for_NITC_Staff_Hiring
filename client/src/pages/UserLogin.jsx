@@ -7,8 +7,9 @@ import { Spinner, Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "./Home.css"; // reuse Home page styles (animations, cta-btn, theme)
-
+import { GoogleLogin } from "@react-oauth/google";
 const UserLogin = React.memo(function UserLogin() {
+const { loginWithGoogle } = useAuth();
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -106,7 +107,27 @@ const UserLogin = React.memo(function UserLogin() {
     }),
     [isDarkMode]
   );
+  
+  
+const handleGoogleLogin = async (credentialResponse) => {
+  try {
+    const { credential } = credentialResponse;
+    setLoading(true);
+    const loggedInUser = await loginWithGoogle(credential);
 
+    // Redirect after login
+    if (loggedInUser.role === "admin") {
+      navigate("/dashboard-admin");
+    } else {
+      navigate("/dashboard-user");
+    }
+  } catch (err) {
+    console.error("Google login error:", err);
+    setErrorMsg("❌ Google login failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
   return (
     <div
       className={`app-shell d-flex flex-column min-vh-100 ${
@@ -269,11 +290,51 @@ const UserLogin = React.memo(function UserLogin() {
                 "Login"
               )}
             </button>
-          </form>
+            
+             {/* Divider */}
+<div className="text-center my-3">
+  <span
+    className="text-muted small position-relative px-3"
+    style={{
+      backgroundColor: isDarkMode ? "#0b1629" : "#fff",
+      zIndex: 1,
+    }}
+  >
+    OR
+  </span>
+  <hr
+    className="m-0 position-relative"
+    style={{
+      top: "-12px",
+      borderColor: isDarkMode ? "#444" : "#ccc",
+      opacity: 0.5,
+    }}
+  />
+</div>
 
+{/* Google Login Button */}
+<div className="d-flex justify-content-center mt-3">
+  <div
+    style={{
+      width: "100%",
+      display: "flex",
+      justifyContent: "center",
+    }}
+  >
+     <GoogleLogin
+  onSuccess={handleGoogleLogin}
+  onError={() => console.log("Login Failed")}
+  theme={isDarkMode ? "filled_black" : "outline"}
+  shape="rectangular"
+  size="large"
+  width="320"
+/>
+  </div>
+  </div>
+  </form>
           <div className="text-center mt-4">
             <small className={isDarkMode ? "text-muted-dark" : "text-muted"}>
-              Don’t have an account?{" "}
+               Don’t have an account?{" "}
               <Link
                 to="/register-user"
                 className="fw-semibold text-decoration-none"
@@ -284,7 +345,7 @@ const UserLogin = React.memo(function UserLogin() {
           </div>
         </div>
       </section>
-
+      
       {/* Forgot Password Modal */}
       <Modal
         show={showForgotModal}

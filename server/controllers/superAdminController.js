@@ -6,7 +6,7 @@ import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: process.env.SMTP_USER, // Add in .env
+    user: process.env.SMTP_USER, 
     pass: process.env.SMTP_PASS,
   },
 });
@@ -73,7 +73,7 @@ export const handleRequest = async (req, res) => {
 
     res.status(400).json({ message: "Invalid action" });
   } catch (err) {
-    console.error("❌ Error in handleRequest:", err);
+    console.error("Error in handleRequest:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -97,9 +97,9 @@ export const deleteAdmin = async (req, res) => {
     // Also delete any admin request linked to the same email
     await AdminRequest.deleteOne({ email: admin.email });
 
-    res.json({ message: `✅ Admin '${admin.email}' deleted successfully.` });
+    res.json({ message: `Admin '${admin.email}' deleted successfully.` });
   } catch (err) {
-    console.error("❌ Error deleting admin:", err);
+    console.error("Error deleting admin:", err);
     res.status(500).json({ message: "Server error while deleting admin" });
   }
 };

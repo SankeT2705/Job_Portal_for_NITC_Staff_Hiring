@@ -23,7 +23,7 @@ router.get("/:email", protect, async (req, res) => {
 
     res.json(formatted);
   } catch (err) {
-    console.error("❌ Error fetching notifications:", err);
+    console.error("Error fetching notifications:", err);
     res.status(500).json({ message: err.message });
   }
 });
@@ -33,9 +33,9 @@ router.delete("/:email", protect, async (req, res) => {
   try {
     const { email } = req.params;
     await Notification.deleteMany({ userEmail: email });
-    res.json({ message: "✅ Notifications cleared" });
+    res.json({ message: "Notifications cleared" });
   } catch (err) {
-    console.error("❌ Error clearing notifications:", err);
+    console.error("Error clearing notifications:", err);
     res.status(500).json({ message: err.message });
   }
 });

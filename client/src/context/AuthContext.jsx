@@ -90,6 +90,51 @@ export const AuthProvider = ({ children }) => {
   );
 
   /** ==============================
+   *  🔹 Google Login
+   *  ============================== */
+  const loginWithGoogle = useCallback(
+    async (googleToken) => {
+      try {
+        // Send token to backend
+        const res = await axios.post(`${apiBase}/api/auth/google`, {
+          token: googleToken,
+        });
+
+        const { token, user } = res.data;
+
+        // Construct consistent user object
+        const loggedInUser = {
+          ...user,
+          token,
+        };
+
+        // ✅ Persist login data
+        setUser(loggedInUser);
+        localStorage.setItem("nitc_user", JSON.stringify(loggedInUser));
+
+        // Compatibility keys
+        if (loggedInUser.role === "admin") {
+          localStorage.setItem("admin_user", JSON.stringify(loggedInUser));
+        } else {
+          localStorage.setItem("current_user", JSON.stringify(loggedInUser));
+        }
+
+        // ✅ Attach JWT globally
+        axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${loggedInUser.token}`;
+
+        console.log("✅ Google login successful:", loggedInUser);
+        return loggedInUser;
+      } catch (err) {
+        console.error("❌ Google Login failed:", err.response?.data || err.message);
+        throw err;
+      }
+    },
+    [apiBase]
+  );
+
+  /** ==============================
    *  Register (User / Admin)
    *  ============================== */
   const register = useCallback(
@@ -99,7 +144,10 @@ export const AuthProvider = ({ children }) => {
         const res = await axios.post(`${apiBase}/api/auth/register`, payload);
         return res.data;
       } catch (err) {
-        console.error("❌ Registration failed:", err.response?.data || err.message);
+        console.error(
+          "❌ Registration failed:",
+          err.response?.data || err.message
+        );
         throw err;
       }
     },
@@ -132,10 +180,11 @@ export const AuthProvider = ({ children }) => {
       isAdmin,
       isUser,
       login,
+      loginWithGoogle, // ✅ added here
       logout,
       register,
     }),
-    [user, isAdmin, isUser, login, logout, register]
+    [user, isAdmin, isUser, login, loginWithGoogle, logout, register]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

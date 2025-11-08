@@ -1,5 +1,5 @@
 import express from "express";
-import { registerUser, loginUser, getProfile } from "../controllers/authController.js";
+import { registerUser, loginUser, getProfile, googleLogin } from "../controllers/authController.js";
 import { protect } from "../middleware/authMiddleware.js";
 import {
   requestAdminAccess,
@@ -28,4 +28,5 @@ router.get("/admin-requests", getAdminRequests);     // Super admin fetches requ
 router.post("/handle-admin-request/:id", handleAdminRequest); // Accept/Reject
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password", resetPassword);
+router.post("/google", googleLogin);
 export default router;

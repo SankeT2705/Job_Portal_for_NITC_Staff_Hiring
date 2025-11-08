@@ -33,11 +33,11 @@ export const createJob = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "✅ Job created successfully",
+      message: "Job created successfully",
       job: newJob,
     });
   } catch (err) {
-    console.error("❌ Job creation error:", err);
+    console.error("Job creation error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
@@ -53,7 +53,7 @@ export const getJobs = async (req, res) => {
     const jobs = await Job.find(filter).sort({ createdAt: -1 });
     res.json(jobs);
   } catch (err) {
-    console.error("❌ Error fetching jobs:", err);
+    console.error("Error fetching jobs:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
@@ -69,7 +69,7 @@ export const getAdminJobs = async (req, res) => {
     const jobs = await Job.find({ owner: email }).sort({ createdAt: -1 });
     res.json(jobs);
   } catch (err) {
-    console.error("❌ Error fetching admin jobs:", err);
+    console.error("Error fetching admin jobs:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
@@ -83,7 +83,7 @@ export const getJobById = async (req, res) => {
     if (!job) return res.status(404).json({ message: "Job not found" });
     res.json(job);
   } catch (err) {
-    console.error("❌ Error fetching job:", err);
+    console.error("Error fetching job:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -111,9 +111,9 @@ export const updateJob = async (req, res) => {
       new: true,
     });
 
-    res.json({ message: "✅ Job updated successfully", job: updatedJob });
+    res.json({ message: "Job updated successfully", job: updatedJob });
   } catch (err) {
-    console.error("❌ Update error:", err);
+    console.error("Update error:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -134,10 +134,10 @@ export const deleteJob = async (req, res) => {
     await job.deleteOne();
 
     res.json({
-      message: "🗑️ Job and related applications deleted successfully",
+      message: "Job and related applications deleted successfully",
     });
   } catch (err) {
-    console.error("❌ Delete job error:", err);
+    console.error("Delete job error:", err);
     res.status(500).json({ message: err.message });
   }
 };

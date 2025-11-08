@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { Spinner, Form } from "react-bootstrap";
+import { Spinner, Form, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -15,9 +15,11 @@ const ResetPassword = React.memo(function ResetPassword() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
-  // Theme management
+  // Message state with structured data
+  const [alert, setAlert] = useState({ type: "", text: "" });
+
+  // Theme state
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== "undefined") {
       return window.localStorage.getItem("nitc-theme") === "dark";
@@ -25,17 +27,15 @@ const ResetPassword = React.memo(function ResetPassword() {
     return false;
   });
 
-  const toggleTheme = useCallback(() => {
-    setIsDarkMode((prev) => !prev);
-  }, []);
+  const toggleTheme = useCallback(() => setIsDarkMode((prev) => !prev), []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window !== "undefined") {
       window.localStorage.setItem("nitc-theme", isDarkMode ? "dark" : "light");
     }
   }, [isDarkMode]);
 
-  // Background style
+  // Background styling
   const heroSectionStyle = useMemo(
     () => ({
       backgroundImage: `url('${
@@ -60,8 +60,14 @@ const ResetPassword = React.memo(function ResetPassword() {
   // Handle password reset
   const handleResetPassword = async (e) => {
     e.preventDefault();
+
+    if (!newPassword || !confirmPassword) {
+      setAlert({ type: "danger", text: "Please fill in all fields." });
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
-      setMessage("❌ Passwords do not match!");
+      setAlert({ type: "danger", text: "Passwords do not match." });
       return;
     }
 
@@ -69,28 +75,26 @@ const ResetPassword = React.memo(function ResetPassword() {
       setLoading(true);
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/auth/reset-password`,
-        {
-          email,
-          newPassword,
-        }
+        { email, newPassword }
       );
 
       const { role } = response.data;
 
-      setMessage("✅ Password reset successful! Redirecting to login...");
-      const redirectPath =
-        role === "admin" ? "/login-admin" : "/login-user";
+      setAlert({ type: "success", text: "Password reset successful! Redirecting..." });
 
-      setTimeout(() => navigate(redirectPath), 2500);
+      // Redirect based on role
+      const redirectPath = role === "admin" ? "/login-admin" : "/login-user";
+      setTimeout(() => navigate(redirectPath), 2000);
     } catch (err) {
       console.error("Reset password error:", err);
       const msg =
         err.response?.data?.message ||
-        "Error resetting password. Please try again later.";
-      setMessage(`❌ ${msg}`);
+        "An unexpected error occurred. Please try again later.";
+      setAlert({ type: "danger", text: msg });
     } finally {
       setLoading(false);
-      setTimeout(() => setMessage(""), 4000);
+      // Auto-clear message after 4 seconds
+      setTimeout(() => setAlert({ type: "", text: "" }), 4000);
     }
   };
 
@@ -158,30 +162,18 @@ const ResetPassword = React.memo(function ResetPassword() {
         className="text-center d-flex flex-column justify-content-center align-items-center position-relative w-100 flex-grow-1 px-3"
         style={heroSectionStyle}
       >
-        {!isDarkMode && (
-          <div
-            className="position-absolute top-0 start-0 w-100 h-100"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(4, 24, 68, 0.25) 0%, rgba(4, 24, 68, 0.45) 46%, rgba(2, 16, 52, 0.75) 100%)",
-              transition: "background 0.6s ease",
-              pointerEvents: "none",
-            }}
-            aria-hidden="true"
-          ></div>
-        )}
-        {isDarkMode && (
-          <div
-            className="position-absolute top-0 start-0 w-100 h-100"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.6) 100%)",
-              transition: "background 0.6s ease",
-              pointerEvents: "none",
-            }}
-            aria-hidden="true"
-          ></div>
-        )}
+        {/* Overlay */}
+        <div
+          className="position-absolute top-0 start-0 w-100 h-100"
+          style={{
+            background: isDarkMode
+              ? "linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.6) 100%)"
+              : "linear-gradient(180deg, rgba(4, 24, 68, 0.25) 0%, rgba(4, 24, 68, 0.45) 46%, rgba(2, 16, 52, 0.75) 100%)",
+            transition: "background 0.6s ease",
+            pointerEvents: "none",
+          }}
+          aria-hidden="true"
+        ></div>
 
         {/* Reset Password Card */}
         <div
@@ -221,16 +213,15 @@ const ResetPassword = React.memo(function ResetPassword() {
               />
             </Form.Group>
 
-            {message && (
-              <div
-                className={`alert mt-2 ${
-                  message.startsWith("✅")
-                    ? "alert-success"
-                    : "alert-danger"
-                } py-2 text-center`}
+            {alert.text && (
+              <Alert
+                variant={alert.type}
+                className="py-2 text-center"
+                dismissible
+                onClose={() => setAlert({ type: "", text: "" })}
               >
-                {message}
-              </div>
+                {alert.text}
+              </Alert>
             )}
 
             <button
