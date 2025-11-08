@@ -294,15 +294,15 @@ const UserDashboard = React.memo(function UserDashboard() {
     if (value == null) return [];
     const asArray = Array.isArray(value)
       ? value
-      : String(value).split(/[,\|\/;+]+/);
+      : String(value).split(/[ ,|/;+]+/);
     const pick = (v) => {
       if (v == null) return [];
-      if (typeof v === "string") return v.split(/[,\|\/;+]+/);
+      if (typeof v === "string") return v.split(/[ ,|/;+]+/);
       if (typeof v === "object") {
         const raw = v.name ?? v.label ?? v.skill ?? v.value ?? "";
-        return String(raw).split(/[,\|\/;+]+/);
+        return String(raw).split(/[ ,|/;+]+/);
       }
-      return String(v).split(/[,\|\/;+]+/);
+      return String(v).split(/[ ,|/;+]+/);
     };
     return asArray
       .flatMap(pick)
