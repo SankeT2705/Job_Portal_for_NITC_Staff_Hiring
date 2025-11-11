@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
 import { Modal, Button, Form, Spinner } from "react-bootstrap";
-import { checkAdminValidity } from "../../components/checkAdminValidity";
 import "../Home.css";
 
 /** Reusable axios client */
