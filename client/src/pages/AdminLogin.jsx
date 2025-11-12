@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { Spinner, Modal, Button, Form } from "react-bootstrap";
+import { Spinner, Modal, Button, Form, Alert } from "react-bootstrap";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "./Home.css"; // reuse animations, cta-btn, theme classes
@@ -16,11 +16,14 @@ const AdminLogin = React.memo(function AdminLogin() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [emailValid, setEmailValid] = useState(true);
 
   // Forgot Password state
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
+  const [resetStatus, setResetStatus] = useState({ type: "", message: "" });
 
   // Theme
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -40,17 +43,29 @@ const AdminLogin = React.memo(function AdminLogin() {
     }
   }, [isDarkMode]);
 
+  // ✅ Email validation regex
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   // Admin Login Handler
   const handleLogin = useCallback(
     async (e) => {
       e.preventDefault();
       if (loading) return;
+
       setLoading(true);
       setErrorMsg("");
+      setSuccessMsg("");
+
+      if (!validateEmail(email)) {
+        setErrorMsg("⚠️ Please enter a valid email address.");
+        setLoading(false);
+        return;
+      }
 
       try {
         await login("admin", email.trim(), password);
-        navigate("/admin");
+        setSuccessMsg("✅ Login successful! Redirecting to admin dashboard...");
+        setTimeout(() => navigate("/admin"), 1500);
       } catch (err) {
         console.error("Admin login failed:", err);
         const msg =
@@ -66,22 +81,33 @@ const AdminLogin = React.memo(function AdminLogin() {
 
   // Forgot Password Handler
   const handleForgotPassword = async () => {
-    if (!resetEmail) {
-      alert("Please enter your email address.");
+    setResetStatus({ type: "", message: "" });
+
+    if (!validateEmail(resetEmail)) {
+      setResetStatus({
+        type: "danger",
+        message: "Please enter a valid admin email address.",
+      });
       return;
     }
 
     try {
       setResetLoading(true);
-      await axios.post(`${process.env.REACT_APP_API_URL}/auth/forgot-password`, {
-        email: resetEmail,
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/auth/forgot-password`,
+        { email: resetEmail }
+      );
+      setResetStatus({
+        type: "success",
+        message: "✅ Password reset link sent successfully!",
       });
-      alert("✅ Password reset link sent to your email!");
-      setShowForgotModal(false);
       setResetEmail("");
     } catch (err) {
       console.error("Forgot password (admin) error:", err);
-      alert("❌ Unable to send reset link. Please check the email or try again later.");
+      setResetStatus({
+        type: "danger",
+        message: "❌ Unable to send reset link. Please try again later.",
+      });
     } finally {
       setResetLoading(false);
     }
@@ -176,38 +202,23 @@ const AdminLogin = React.memo(function AdminLogin() {
         className="text-center d-flex flex-column justify-content-center align-items-center position-relative w-100 flex-grow-1 px-3"
         style={heroSectionStyle}
       >
-        {!isDarkMode && (
-          <div
-            className="position-absolute top-0 start-0 w-100 h-100"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(4, 24, 68, 0.25) 0%, rgba(4, 24, 68, 0.45) 46%, rgba(2, 16, 52, 0.75) 100%)",
-              transition: "background 0.6s ease",
-              pointerEvents: "none",
-            }}
-            aria-hidden="true"
-          ></div>
-        )}
-        {isDarkMode && (
-          <div
-            className="position-absolute top-0 start-0 w-100 h-100"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.6) 100%)",
-              transition: "background 0.6s ease",
-              pointerEvents: "none",
-            }}
-            aria-hidden="true"
-          ></div>
-        )}
+        {/* Overlay */}
+        <div
+          className="position-absolute top-0 start-0 w-100 h-100"
+          style={{
+            background: isDarkMode
+              ? "linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.6) 100%)"
+              : "linear-gradient(180deg, rgba(4,24,68,0.25) 0%, rgba(4,24,68,0.45) 46%, rgba(2,16,52,0.75) 100%)",
+            transition: "background 0.6s ease",
+            pointerEvents: "none",
+          }}
+          aria-hidden="true"
+        ></div>
 
         {/* Login Card */}
         <div
           className="surface-card surface-card--glass border-0 p-4 text-start position-relative"
-          style={{
-            width: "380px",
-            zIndex: 5,
-          }}
+          style={{ width: "380px", zIndex: 5 }}
         >
           <h4
             className={`text-center mb-4 fw-bold ${
@@ -217,23 +228,37 @@ const AdminLogin = React.memo(function AdminLogin() {
             <i className="bi bi-shield-lock me-2"></i> Admin Login
           </h4>
 
+          {/* Alerts */}
+          {successMsg && (
+            <Alert variant="success" className="text-center py-2 animate__fadeInDown">
+              {successMsg}
+            </Alert>
+          )}
           {errorMsg && (
-            <div className="alert alert-danger py-2 text-center" role="alert">
+            <Alert variant="danger" className="text-center py-2 animate__fadeInDown">
               {errorMsg}
-            </div>
+            </Alert>
           )}
 
           <form onSubmit={handleLogin} noValidate>
             <div className="mb-3">
               <input
                 type="email"
-                className="form-control themed-form-control"
+                className={`form-control themed-form-control ${
+                  !emailValid ? "is-invalid" : ""
+                }`}
                 placeholder="Email"
                 required
                 autoComplete="username"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailValid(validateEmail(e.target.value) || e.target.value === "");
+                }}
               />
+              {!emailValid && (
+                <div className="invalid-feedback">Enter a valid email address.</div>
+              )}
             </div>
             <div className="mb-3">
               <input
@@ -261,7 +286,7 @@ const AdminLogin = React.memo(function AdminLogin() {
             <button
               type="submit"
               className="cta-btn w-100 fw-semibold py-2"
-              disabled={loading || !email || !password}
+              disabled={loading || !email || !password || !emailValid}
             >
               {loading ? (
                 <>
@@ -288,15 +313,14 @@ const AdminLogin = React.memo(function AdminLogin() {
       </section>
 
       {/* Forgot Password Modal */}
-      <Modal
-        show={showForgotModal}
-        onHide={() => setShowForgotModal(false)}
-        centered
-      >
+      <Modal show={showForgotModal} onHide={() => setShowForgotModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Reset Password</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {resetStatus.message && (
+            <Alert variant={resetStatus.type}>{resetStatus.message}</Alert>
+          )}
           <Form>
             <Form.Group>
               <Form.Label>Enter your registered admin email</Form.Label>

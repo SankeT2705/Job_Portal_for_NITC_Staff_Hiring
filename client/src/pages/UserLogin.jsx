@@ -3,13 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
-import { Spinner, Modal, Button, Form } from "react-bootstrap";
+import { Spinner, Modal, Button, Form, Alert } from "react-bootstrap";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import "./Home.css"; // reuse Home page styles (animations, cta-btn, theme)
- 
+
 const UserLogin = React.memo(function UserLogin() {
- 
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -17,11 +16,14 @@ const UserLogin = React.memo(function UserLogin() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [emailValid, setEmailValid] = useState(true);
 
   // Forgot Password states
   const [showForgotModal, setShowForgotModal] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
+  const [resetStatus, setResetStatus] = useState({ type: "", message: "" });
 
   // theme toggle
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -41,24 +43,36 @@ const UserLogin = React.memo(function UserLogin() {
     }
   }, [isDarkMode]);
 
+  // ✅ Email format validation
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   // Forgot Password Handler
   const handleForgotPassword = async () => {
-    if (!resetEmail) {
-      alert("Please enter your email address.");
+    if (!validateEmail(resetEmail)) {
+      setResetStatus({
+        type: "danger",
+        message: "Please enter a valid registered email.",
+      });
       return;
     }
 
     try {
       setResetLoading(true);
-      await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/forgot-password`, {
-  email: resetEmail,
-});
-      alert("✅ Password reset link sent to your email!");
-      setShowForgotModal(false);
+      await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/auth/forgot-password`,
+        { email: resetEmail }
+      );
+      setResetStatus({
+        type: "success",
+        message: "✅ Password reset link sent to your email!",
+      });
       setResetEmail("");
     } catch (err) {
       console.error(err);
-      alert("❌ Unable to send reset link. Please check your email or try again later.");
+      setResetStatus({
+        type: "danger",
+        message: "❌ Unable to send reset link. Try again later.",
+      });
     } finally {
       setResetLoading(false);
     }
@@ -68,12 +82,22 @@ const UserLogin = React.memo(function UserLogin() {
     async (e) => {
       e.preventDefault();
       if (loading) return;
+
       setLoading(true);
       setErrorMsg("");
+      setSuccessMsg("");
+
+      // ✅ Pre-check email validity
+      if (!validateEmail(email)) {
+        setErrorMsg("⚠️ Please enter a valid email address.");
+        setLoading(false);
+        return;
+      }
 
       try {
         await login("user", email.trim(), password);
-        navigate("/dashboard-user");
+        setSuccessMsg("✅ Login successful! Redirecting...");
+        setTimeout(() => navigate("/dashboard-user"), 1500);
       } catch (err) {
         console.error("Login failed:", err);
         const msg =
@@ -107,6 +131,7 @@ const UserLogin = React.memo(function UserLogin() {
     }),
     [isDarkMode]
   );
+
   return (
     <div
       className={`app-shell d-flex flex-column min-vh-100 ${
@@ -154,7 +179,7 @@ const UserLogin = React.memo(function UserLogin() {
                   className="nav-link active fw-semibold px-3"
                   to="/login-user"
                 >
-                 User Login
+                  User Login
                 </Link>
               </li>
             </ul>
@@ -174,38 +199,23 @@ const UserLogin = React.memo(function UserLogin() {
         className="text-center d-flex flex-column justify-content-center align-items-center position-relative w-100 flex-grow-1 px-3"
         style={heroSectionStyle}
       >
-        {!isDarkMode && (
-          <div
-            className="position-absolute top-0 start-0 w-100 h-100"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(4, 24, 68, 0.25) 0%, rgba(4, 24, 68, 0.45) 46%, rgba(2, 16, 52, 0.75) 100%)",
-              transition: "background 0.6s ease",
-              pointerEvents: "none",
-            }}
-            aria-hidden="true"
-          ></div>
-        )}
-        {isDarkMode && (
-          <div
-            className="position-absolute top-0 start-0 w-100 h-100"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.6) 100%)",
-              transition: "background 0.6s ease",
-              pointerEvents: "none",
-            }}
-            aria-hidden="true"
-          ></div>
-        )}
+        {/* Overlay */}
+        <div
+          className="position-absolute top-0 start-0 w-100 h-100"
+          style={{
+            background: isDarkMode
+              ? "linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.6) 100%)"
+              : "linear-gradient(180deg, rgba(4,24,68,0.25) 0%, rgba(4,24,68,0.45) 46%, rgba(2,16,52,0.75) 100%)",
+            transition: "background 0.6s ease",
+            pointerEvents: "none",
+          }}
+          aria-hidden="true"
+        ></div>
 
         {/* Login Card */}
         <div
           className="surface-card surface-card--glass border-0 p-4 text-start position-relative"
-          style={{
-            width: "380px",
-            zIndex: 5,
-          }}
+          style={{ width: "380px", zIndex: 5 }}
         >
           <h4
             className={`text-center mb-4 fw-bold ${
@@ -215,23 +225,39 @@ const UserLogin = React.memo(function UserLogin() {
             <i className="bi bi-person-circle me-2"></i> User Login
           </h4>
 
+          {/* ✅ Alerts */}
+          {successMsg && (
+            <Alert variant="success" className="text-center py-2 animate__fadeInDown">
+              {successMsg}
+            </Alert>
+          )}
           {errorMsg && (
-            <div className="alert alert-danger py-2 text-center" role="alert">
+            <Alert variant="danger" className="text-center py-2 animate__fadeInDown">
               {errorMsg}
-            </div>
+            </Alert>
           )}
 
           <form onSubmit={handleLogin} noValidate>
             <div className="mb-3">
               <input
                 type="email"
-                className="form-control themed-form-control"
+                className={`form-control themed-form-control ${
+                  !emailValid ? "is-invalid" : ""
+                }`}
                 placeholder="Email"
                 required
                 autoComplete="username"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailValid(validateEmail(e.target.value) || e.target.value === "");
+                }}
               />
+              {!emailValid && (
+                <div className="invalid-feedback">
+                  Please enter a valid email address.
+                </div>
+              )}
             </div>
             <div className="mb-3">
               <input
@@ -259,7 +285,7 @@ const UserLogin = React.memo(function UserLogin() {
             <button
               type="submit"
               className="cta-btn w-100 fw-semibold py-2"
-              disabled={loading || !email || !password}
+              disabled={loading || !email || !password || !emailValid}
             >
               {loading ? (
                 <>
@@ -269,32 +295,11 @@ const UserLogin = React.memo(function UserLogin() {
                 "Login"
               )}
             </button>
-            
-             {/* Divider */}
-<div className="text-center my-3">
-  <span
-    className="text-muted small position-relative px-3"
-    style={{
-      backgroundColor: isDarkMode ? "#0b1629" : "#fff",
-      zIndex: 1,
-    }}
-  >
-    OR
-  </span>
-  <hr
-    className="m-0 position-relative"
-    style={{
-      top: "-12px",
-      borderColor: isDarkMode ? "#444" : "#ccc",
-      opacity: 0.5,
-    }}
-  />
-</div>
+          </form>
 
-  </form>
           <div className="text-center mt-4">
             <small className={isDarkMode ? "text-muted-dark" : "text-muted"}>
-               Don’t have an account?{" "}
+              Don’t have an account?{" "}
               <Link
                 to="/register-user"
                 className="fw-semibold text-decoration-none"
@@ -305,17 +310,16 @@ const UserLogin = React.memo(function UserLogin() {
           </div>
         </div>
       </section>
-      
+
       {/* Forgot Password Modal */}
-      <Modal
-        show={showForgotModal}
-        onHide={() => setShowForgotModal(false)}
-        centered
-      >
+      <Modal show={showForgotModal} onHide={() => setShowForgotModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Reset Password</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {resetStatus.message && (
+            <Alert variant={resetStatus.type}>{resetStatus.message}</Alert>
+          )}
           <Form>
             <Form.Group>
               <Form.Label>Enter your registered email</Form.Label>
