@@ -33,6 +33,32 @@ const useAxiosClient = () => {
   }, [token]);
 };
 
+/** ---------- size helpers (Base64) ---------- */
+// Option B: enforce 2MB limit on final Base64 payload
+const MAX_BASE64_BYTES = 2 * 1024 * 1024; // 2 MB
+
+/**
+ * Given a data URL or plain base64 string, return the number of bytes the base64 encodes to.
+ * Works for strings like "data:application/pdf;base64,...." or "...." (base64 only).
+ */
+const base64ByteSize = (dataUrlOrBase64) => {
+  if (!dataUrlOrBase64) return 0;
+  // strip data url prefix if present
+  const commaIndex = dataUrlOrBase64.indexOf(",");
+  const b64 = commaIndex >= 0 ? dataUrlOrBase64.slice(commaIndex + 1) : dataUrlOrBase64;
+  // remove whitespace/newlines
+  const cleaned = b64.replace(/\s/g, "");
+  // length of base64 string
+  const len = cleaned.length;
+  if (len === 0) return 0;
+  // count padding characters
+  let padding = 0;
+  if (cleaned.endsWith("==")) padding = 2;
+  else if (cleaned.endsWith("=")) padding = 1;
+  // decoded bytes = (len * 3) / 4 - padding
+  return Math.ceil((len * 3) / 4) - padding;
+};
+
 const UserDashboard = React.memo(function UserDashboard() {
   const navigate = useNavigate();
   const api = useAxiosClient();
@@ -340,7 +366,7 @@ const UserDashboard = React.memo(function UserDashboard() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    resumeFile: null,
+    resumeFile: null, // will store data URL (base64)
     coverLetter: "",
   });
 
@@ -365,14 +391,39 @@ const UserDashboard = React.memo(function UserDashboard() {
       const file = files[0];
       const reader = new FileReader();
       fileReaderRef.current = reader;
+
+      // capture input element to reset its value in case of error
+      const inputEl = e.target;
+
       reader.onloadend = () => {
-        setFormData((prev) => ({ ...prev, resumeFile: reader.result })); // Base64 (as before)
+        const dataUrl = reader.result;
+        // compute decoded byte size from base64
+        const sizeBytes = base64ByteSize(dataUrl);
+        if (sizeBytes > MAX_BASE64_BYTES) {
+          pushAlert(
+            "The uploaded resume exceeds 2 MB.....",
+            "warning"
+          );
+          // clear stored value
+          setFormData((prev) => ({ ...prev, resumeFile: null }));
+          // reset file input visual
+          try {
+            inputEl.value = "";
+          } catch (err) {
+            // ignore - some browsers disallow programmatic reset in synthetic events
+          }
+          return;
+        }
+
+        // within limit -> store data URL (Base64)
+        setFormData((prev) => ({ ...prev, resumeFile: dataUrl }));
+        pushAlert("Resume file ready for upload.", "success");
       };
       reader.readAsDataURL(file);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
-  }, []);
+  }, [pushAlert]);
 
   useEffect(() => {
     // abort any pending FileReader work if modal closes/unmounts
@@ -460,12 +511,32 @@ const UserDashboard = React.memo(function UserDashboard() {
     navigate("/");
   }, [navigate]);
 
+  /**
+   * handleViewResume:
+   * - Accepts either a remote URL (http/https) or a dataURL (base64).
+   * - If dataURL is passed, ensure its final Base64-decoded bytes <= 2MB before previewing.
+   * - If it's a normal remote URL and we don't know size, allow preview (browser will handle).
+   */
   const handleViewResume = useCallback(
     (url) => {
       if (!url) {
         pushAlert("No resume found for this applicant.", "warning");
         return;
       }
+
+      // If it's a data URL (base64), check decoded size
+      const isDataUrl = typeof url === "string" && url.startsWith("data:");
+      if (isDataUrl) {
+        const sizeBytes = base64ByteSize(url);
+        if (sizeBytes > MAX_BASE64_BYTES) {
+          pushAlert(
+            "This resume (after encoding) exceeds the 2 MB limit and cannot be previewed. Please provide a smaller file.",
+            "danger"
+          );
+          return;
+        }
+      }
+
       setPreviewUrl(url);
       // Scroll smoothly to preview area
       window.requestAnimationFrame(() => {
